@@ -1,19 +1,12 @@
-import localFont from "next/font/local";
+import * as React from "react";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
+import { ThemeProvider } from "@mui/material/styles";
 import "./globals.css";
+import CssBaseline from "@mui/material/CssBaseline";
+import theme from "@/theme/defaultTheme";
 import AppNavbar from "@/components/AppNavbar";
-
-import { NextUIProvider } from "@nextui-org/react";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+import ThemeNavbar from "@/components/ThemeNavbar";
+import { Navbar } from "@nextui-org/react";
 
 export const metadata = {
   title: "Glimmer",
@@ -23,13 +16,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <NextUIProvider>
-          <AppNavbar />
-          <main>{children}</main>
-        </NextUIProvider>
+      <body>
+        <AppRouterCacheProvider options={{ enableCssLayer: true }}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline enableColorScheme/>
+            <AppNavbar />
+            <main>{children}</main>
+          </ThemeProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

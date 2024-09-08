@@ -2,7 +2,7 @@ export default function Home() {
   return (
     <div>
       <p>
-        yo
+        yoasdfkjhasdjklfhajklsdfhklahjsdklfjahsdkljf Featyres
       </p>
     </div>
   );
