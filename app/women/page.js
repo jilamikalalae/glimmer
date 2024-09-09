@@ -1,10 +1,7 @@
 export default function Women() {
-    return (
-      <div>
-        <p>
-          women
-        </p>
-      </div>
-    );
-  }
-  
+  return (
+    <div>
+      <p>This is women page</p>
+    </div>
+  );
+}

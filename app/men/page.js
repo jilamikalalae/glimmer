@@ -1,10 +1,7 @@
 export default function Men() {
-    return (
-      <div>
-        <p>
-          men
-        </p>
-      </div>
-    );
-  }
-  
+  return (
+    <div>
+      <p>This is men page</p>
+    </div>
+  );
+}
