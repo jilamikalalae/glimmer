@@ -61,7 +61,7 @@ const AppNavbar = () => {
   }, [open]);
 
   return (
-    <nav className="p-5 bg-white shadow md:flex md:items-center md:justify-between">
+    <nav className="p-5 bg-white shadow md:flex md:items-center md:justify-between sticky top-0 z-50 drop-shadow-lg">
       <div className="flex justify-between items-center">
         <span className="text-2xl  cursor-pointer">
           <Image
@@ -157,7 +157,6 @@ const AppNavbar = () => {
                           My shop
                         </MenuItem>
                         <MenuItem>My account</MenuItem>
-                        <MenuItem>Logout</MenuItem>
                       </MenuList>
                     </ClickAwayListener>
                   </Paper>
