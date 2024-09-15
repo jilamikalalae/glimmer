@@ -16,7 +16,7 @@ export default function Home() {
         }}
       >
         <button
-          onClick={() => router.push("/season/summer")}
+          onClick={() => router.push("/season?season=summer")}
           className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-4 text-lg bg-white hover:bg-pink-300 text-black font-bold py-2 px-4 rounded-lg"
         >
           Summer outfit
@@ -33,7 +33,7 @@ export default function Home() {
         }}
       >
         <button
-          onClick={() => router.push("/season/winter")}
+          onClick={() => router.push("/season?season=winter")}
           className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-4 text-lg bg-white hover:bg-pink-300 text-black font-bold py-2 px-4 rounded-lg"
         >
           Winter outfit
