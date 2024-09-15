@@ -3,7 +3,7 @@
 import Link from 'next/link';
 
 const products = [
-  { id: 1, name: "Classy Blazer", price: "$20/week", color: "brown", category: "Women", img: "/image/turtleneck.jpeg", sizes: ["XS", "S", "M", "L"] },
+  { id: 1, name: "Classy Blazer", price: "$20/week", color: "brown", category: "Men", img: "/image/turtleneck.jpeg", sizes: ["XS", "S", "M", "L"] },
   { id: 2, name: "Fur cuffed cardigan", price: "$30/week", color: "cream", category: "Women", img: "/image/fur-cuffed-cardigan.jpeg", sizes: ["S", "M", "L"] },
 ];
 
