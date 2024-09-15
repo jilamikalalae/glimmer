@@ -1,4 +1,4 @@
-// app/product/[id]/page.js
+"use client"; // Add this to make the component a Client Component
 
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -6,22 +6,20 @@ import Image from 'next/image';
 import { FaEdit } from 'react-icons/fa';
 
 const products = [
-  { id: 1, name: "Classy Blazer", price: "$20/week", color: "brown", category: "Women", img: "/image/turtleneck.jpeg", sizes: ["XS", "S", "M", "L"] },
+  { id: 1, name: "Classy Blazer", price: "$20/week", color: "brown", category: "Men", img: "/image/turtleneck.jpeg", sizes: ["XS", "S", "M", "L"] },
   { id: 2, name: "Fur cuffed cardigan", price: "$30/week", color: "cream", category: "Women", img: "/image/fur-cuffed-cardigan.jpeg", sizes: ["S", "M", "L"] },
 ];
 
-export default function ProductDetails() {
-  const { id } = useRouter().query;
+export default function ProductDetails({ params }) {
+  const { id } = params; // Get the dynamic ID from the URL
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    if (id) {
-      const selectedProduct = products.find(p => p.id === parseInt(id));
-      setProduct(selectedProduct);
-    }
+    const selectedProduct = products.find(p => p.id === parseInt(id));
+    setProduct(selectedProduct);
   }, [id]);
 
-  if (!product) return <p>Loading...</p>;
+  if (!product) return <p>Product not found</p>;
 
   return (
     <div className="p-8">
@@ -30,10 +28,9 @@ export default function ProductDetails() {
           <Image 
             src={product.img}
             alt={product.name}
-            width={500}  // Set the width
-            height={500} // Set the height
-            layout="fixed" // Ensure fixed layout for consistent sizing
-            className="object-cover" // Ensures the image covers the area without stretching
+            width={500}  
+            height={500}
+            className="object-cover"
           />
         </div>
         <div className="w-1/2 pl-8">
