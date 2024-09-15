@@ -39,6 +39,40 @@ export default function Home() {
           Winter outfit
         </button>
       </div>
+
+      <div
+        className="bg-yellow-300 w-full h-96 relative background"
+        style={{
+          backgroundImage:
+            "url('https://pbs.twimg.com/media/F1nkri6aIAEBniR?format=jpg&name=large')", // Example image URL
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <button
+          onClick={() => router.push("/season?season=spring")}
+          className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-4 text-lg bg-white hover:bg-pink-300 text-black font-bold py-2 px-4 rounded-lg"
+        >
+          Spring outfit
+        </button>
+      </div>
+
+      <div
+        className="bg-yellow-300 w-full h-96 relative background"
+        style={{
+          backgroundImage:
+            "url('https://pbs.twimg.com/media/FtBEcPeaEAEHJNE?format=jpg&name=medium')", // Example image URL
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <button
+          onClick={() => router.push("/season?season=fall")}
+          className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-4 text-lg bg-white hover:bg-pink-300 text-black font-bold py-2 px-4 rounded-lg"
+        >
+          Fall outfit
+        </button>
+      </div>
     </>
   );
 }
