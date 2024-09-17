@@ -27,7 +27,7 @@ export default function Men() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Men's Clothing for Rent</h1>
+      <h1 className="text-2xl font-bold mb-4">Men&apos;s Clothing for Rent</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {menProducts.map(product => (
           <div key={product.id} className="border p-4 rounded">
