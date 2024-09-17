@@ -156,7 +156,11 @@ const AppNavbar = () => {
                         >
                           My shop
                         </MenuItem>
-                        <MenuItem>My account</MenuItem>
+                        <MenuItem
+                          onClick={(event) => handleClose(event, "/account")}
+                        >
+                          My account
+                        </MenuItem>
                       </MenuList>
                     </ClickAwayListener>
                   </Paper>
