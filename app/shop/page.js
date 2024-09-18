@@ -1,25 +1,25 @@
-"use client"; // Ensures the component is treated as a client component
+import Link from "next/link";
 
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-
-export default function ShopPage() {
-  const router = useRouter();
-  const [products, setProducts] = useState([]);
-
-  // Load products from local storage or default products
-  useEffect(() => {
-    const storedProducts = JSON.parse(localStorage.getItem('products')) || [
-      { id: 1, name: "Classy Blazer", price: "$20/week", color: "brown", category: "Men", season: "winter", img: "/image/turtleneck.jpeg", sizes: ["XS", "S", "M", "L"] },
-      { id: 2, name: "Fur cuffed cardigan", price: "$30/week", color: "cream", category: "Women", season: "fall", img: "/image/fur-cuffed-cardigan.jpeg", sizes: ["S", "M", "L"] },
-    ];
-    setProducts(storedProducts);
-  }, []);
-
-  const handleViewDetails = (id) => {
-    router.push(`/product/${id}`);
-  };
+const products = [
+  {
+    id: 1,
+    name: "Classy Blazer",
+    price: "$20/week",
+    color: "brown",
+    category: "Men",
+    img: "/image/turtleneck.jpeg",
+    sizes: ["XS", "S", "M", "L"],
+  },
+  {
+    id: 2,
+    name: "Fur cuffed cardigan",
+    price: "$30/week",
+    color: "cream",
+    category: "Women",
+    img: "/image/fur-cuffed-cardigan.jpeg",
+    sizes: ["S", "M", "L"],
+  },
+];
 
   return (
     <div className="p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -56,4 +56,4 @@ export default function ShopPage() {
       ))}
     </div>
   );
-}
+
