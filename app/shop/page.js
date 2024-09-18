@@ -1,29 +1,59 @@
+"use client"; // Ensures the component is treated as a client component
 
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-import Link from 'next/link';
+export default function ShopPage() {
+  const router = useRouter();
+  const [products, setProducts] = useState([]);
 
-const products = [
-  { id: 1, name: "Classy Blazer", price: "$20/week", color: "brown", category: "Men", img: "/image/turtleneck.jpeg", sizes: ["XS", "S", "M", "L"] },
-  { id: 2, name: "Fur cuffed cardigan", price: "$30/week", color: "cream", category: "Women", img: "/image/fur-cuffed-cardigan.jpeg", sizes: ["S", "M", "L"] },
-];
+  // Load products from local storage or default products
+  useEffect(() => {
+    const storedProducts = JSON.parse(localStorage.getItem('products')) || [
+      { id: 1, name: "Classy Blazer", price: "$20/week", color: "brown", category: "Men", season: "winter", img: "/image/turtleneck.jpeg", sizes: ["XS", "S", "M", "L"] },
+      { id: 2, name: "Fur cuffed cardigan", price: "$30/week", color: "cream", category: "Women", season: "fall", img: "/image/fur-cuffed-cardigan.jpeg", sizes: ["S", "M", "L"] },
+    ];
+    setProducts(storedProducts);
+  }, []);
 
-export default function Shop() {
+  const handleViewDetails = (id) => {
+    router.push(`/product/${id}`);
+  };
+
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Shop</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {products.map(product => (
-          <div key={product.id} className="border p-4 rounded">
-            <img src={product.img} alt={product.name} className="w-full h-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
-            <p className="mb-2"><strong>Price:</strong> {product.price}</p>
-            <p className="mb-2"><strong>Category:</strong> {product.category}</p>
-            <Link href={`/product/${product.id}`} className="text-blue-500 hover:underline">
-            View Details
-            </Link>
+    <div className="p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {products.map((product) => (
+        <div
+          key={product.id}
+          className="border border-gray-300 rounded-lg shadow-sm p-8"
+          style={{ width: "300px", padding: "24px" }}
+        >
+          <div className="relative w-[250px] h-[300px] mx-auto">
+            <Image
+              src={product.img}
+              alt={product.name}
+              layout="fill"
+              objectFit="cover"
+              className="rounded-t-lg"
+            />
           </div>
-        ))}
-      </div>
+          <div className="p-4 space-y-2">
+            <h2 className="text-lg font-semibold">{product.name}</h2>
+            <p className="text-gray-500">Category: {product.category}</p>
+            <p className="text-gray-700">Price: {product.price}</p>
+            <p className="text-gray-500">Color: {product.color}</p>
+            <p className="text-gray-500">Season: {product.season}</p>
+            <p className="text-gray-500">Sizes: {product.sizes.join(", ")}</p>
+            <button
+              onClick={() => handleViewDetails(product.id)}
+              className="mt-4 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 w-full"
+            >
+              View Details
+            </button>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
