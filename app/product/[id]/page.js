@@ -6,8 +6,9 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 const products = [
-  { id: 1, name: "Classy Blazer", price: "$20/week", color: "brown", category: "Men", season: "winter", img: "/image/turtleneck.jpeg", sizes: ["XS", "S", "M", "L"] },
-  { id: 2, name: "Fur cuffed cardigan", price: "$30/week", color: "cream", category: "Women", season: "fall", img: "/image/fur-cuffed-cardigan.jpeg", sizes: ["S", "M", "L"] },
+  { id: 1, name: "Classy Blazer", price: "$20/week", color: "brown", category: "Women", season: "winter", img: "/image_woman/turtleneck.jpeg", sizes: ["XS", "S", "M", "L"] },
+  { id: 2, name: "Fur cuffed cardigan", price: "$30/week", color: "cream", category: "Women", season: "fall", img: "/image_woman/fur-cuffed-cardigan.jpeg", sizes: ["S", "M", "L"] },
+  { id: 3, name: "Shirt", price: "$30/week", color: "cream", category: "Men", season: "fall", img: "/image_men/shirt.jpeg", sizes: ["S", "M", "L"] },
 ];
 
 export default function ProductDetails({ params }) {
