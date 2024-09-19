@@ -7,7 +7,8 @@ const products = [
     price: "$20/week",
     color: "brown",
     category: "Men",
-    img: "/image/turtleneck.jpeg",
+    season: "Winter",
+    img: "/image_woman/turtleneck.jpeg",
     sizes: ["XS", "S", "M", "L"],
   },
   {
@@ -16,7 +17,18 @@ const products = [
     price: "$30/week",
     color: "cream",
     category: "Women",
-    img: "/image/fur-cuffed-cardigan.jpeg",
+    season: "Winter",
+    img: "/image_woman/fur-cuffed-cardigan.jpeg",
+    sizes: ["S", "M", "L"],
+  },
+  {
+    id: 3,
+    name: "Shirt",
+    price: "$20/week",
+    color: "cream",
+    category: "Men",
+    season: "Fall",
+    img: "/image_men/shirt.jpeg",
     sizes: ["S", "M", "L"],
   },
 ];
@@ -25,6 +37,13 @@ export default function Shop() {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-4">Shop</h1>
+      <div className="mb-4">
+        <Link href="/add-product">
+          <button className="bg-[#F3D0D7] text-white border border-gray-300 p-2 rounded flex items-center">
+            Add Product
+          </button>
+        </Link>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {products.map((product) => (
           <div key={product.id} className="border p-4 rounded">
@@ -40,6 +59,22 @@ export default function Shop() {
             <p className="mb-2">
               <strong>Category:</strong> {product.category}
             </p>
+            <p className="mb-2">
+              <strong>Season:</strong> {product.season}
+            </p>
+            <p className="mb-2">
+              <strong>Color:</strong> {product.color}
+            </p>
+            <div className="flex space-x-2 mb-2">
+              {product.sizes.map((size, index) => (
+                <span
+                  key={index}
+                  className="px-2 py-1 border border-gray-300 rounded bg-gray-100 text-gray-600 cursor-default"
+                >
+                  {size}
+                </span>
+              ))}
+            </div>
             <Link
               href={`/product/${product.id}`}
               className="text-blue-500 hover:underline"
