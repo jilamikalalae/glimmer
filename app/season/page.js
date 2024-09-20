@@ -10,7 +10,9 @@ export default function Season() {
       <div>
         <p>highlight season {season ? season : "yo"}</p>
       </div>
-      <div></div>
+      <div>
+        <p> test</p>
+      </div>
     </>
   );
 }
