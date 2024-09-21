@@ -1,20 +1,18 @@
-// /app/api/login/route.js
+import { NextResponse } from 'next/server';
+import User from '@/models/user';
+import bcrypt from "bcryptjs";
 
-import { connectToDatabase } from '../../../lib/db';
-import bcrypt from 'bcrypt';
+export async function POST(req) {
+  try {
+    const {name, username, email, password} = await req.json();
+    const hashedPassword = await bcrypt.hash(password, 10)
+    await User.create({name, username, email, password:hashedPassword});
 
-export async function POST(req, res) {
-  const { email, password } = await req.json();
-
-  const db = await connectToDatabase();
-  const collection = db.collection('users');
-
-  const user = await collection.findOne({ email });
-
-  if (user && await bcrypt.compare(password, user.password)) {
-    // Set up session or JWT here
-    res.status(200).json({ success: true, user });
-  } else {
-    res.status(401).json({ success: false, message: 'Invalid credentials' });
+    return NextResponse.json({message: "User signed in."}, {status: 201});
+  } catch (error) {
+    return NextResponse.json(
+        { message: "An error occurred while signing in the user."},
+        {status: 500}
+    );
   }
 }
