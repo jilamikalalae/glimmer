@@ -102,7 +102,7 @@ export default function LoginForm() {
         </form>
 
         <p className="mt-10 text-center text-sm text-gray-500">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <button
             onClick={() => router.push('/signup')} // Navigate to the Signup page
             className="font-semibold leading-6 text-pink-600 hover:text-pink-500 focus:outline-none"
