@@ -8,7 +8,7 @@ export default function SignupForm() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");  // Fixed typo from setUserame to setUsername
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -21,7 +21,26 @@ export default function SignupForm() {
     }
 
     try {
-      const res = await fetch('api/signup', {
+      // Check if user already exists
+      const resUserExists = await fetch('/api/userexists', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const { user } = await resUserExists.json();
+      
+      console.log(user); // Debugging: Check what the API returns
+
+      if (user) {
+        setError("User already exists.");
+        return;
+      }
+
+      // Register new user
+      const res = await fetch('/api/signup', {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -39,10 +58,11 @@ export default function SignupForm() {
         form.reset();
         router.push('/login');  // Navigate to a success page or login page after signup
       } else {
-        console.log("User registration failed.");
+        setError("User registration failed.");
       }
     } catch (error) {
-      console.log("Error during registration.");
+      console.log("Error during registration:", error);
+      setError("An error occurred. Please try again.");
     }
   };
 
@@ -55,7 +75,7 @@ export default function SignupForm() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" onSubmit={handleSubmit}>  {/* onSubmit added here */}
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
               Full Name
@@ -76,7 +96,7 @@ export default function SignupForm() {
               Username
             </label>
             <div className="mt-2">
-              <input onChange={(e) => setUsername(e.target.value)}  // Corrected setUserame to setUsername
+              <input onChange={(e) => setUsername(e.target.value)}
                 id="username"
                 name="username"
                 type="text"
@@ -126,7 +146,7 @@ export default function SignupForm() {
 
           <div>
             <button
-              type="submit"  // Ensure button type is "submit"
+              type="submit"
               className="flex w-full justify-center rounded-md bg-pink-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-pink-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600"
             >
               Sign up
@@ -137,7 +157,7 @@ export default function SignupForm() {
         <p className="mt-10 text-center text-sm text-gray-500">
           Already have an account?{' '}
           <button
-            onClick={() => router.push('/login')} // Navigate to the Login page
+            onClick={() => router.push('/login')}
             className="font-semibold leading-6 text-pink-600 hover:text-pink-500 focus:outline-none"
           >
             Sign in
