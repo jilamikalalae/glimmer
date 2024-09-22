@@ -1,13 +1,16 @@
+"use client";
 import Link from "next/link";
+import { useState } from "react";
 
-const products = [
+const initialProducts = [
   {
     id: 1,
     name: "Classy Blazer",
     price: "$20/week",
     color: "brown",
     category: "Men",
-    img: "/image/turtleneck.jpeg",
+    season: "Winter",
+    img: "/image_woman/turtleneck.jpeg",
     sizes: ["XS", "S", "M", "L"],
   },
   {
@@ -16,44 +19,87 @@ const products = [
     price: "$30/week",
     color: "cream",
     category: "Women",
-    img: "/image/fur-cuffed-cardigan.jpeg",
+    season: "Winter",
+    img: "/image_woman/fur-cuffed-cardigan.jpeg",
+    sizes: ["S", "M", "L"],
+  },
+  {
+    id: 3,
+    name: "Shirt",
+    price: "$20/week",
+    color: "cream",
+    category: "Men",
+    season: "Fall",
+    img: "/image_men/shirt.jpeg",
     sizes: ["S", "M", "L"],
   },
 ];
 
+export default function Shop() {
+  const [products, setProducts] = useState(initialProducts);
+
+  const handleDelete = (id) => {
+    setProducts(products.filter(product => product.id !== id));
+  };
+
   return (
-    <div className="p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      {products.map((product) => (
-        <div
-          key={product.id}
-          className="border border-gray-300 rounded-lg shadow-sm p-8"
-          style={{ width: "300px", padding: "24px" }}
-        >
-          <div className="relative w-[250px] h-[300px] mx-auto">
-            <Image
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-4">Shop</h1>
+      <div className="mb-4">
+        <Link href="/add-product">
+          <button className="bg-[#F3D0D7] text-white border border-gray-300 p-2 rounded flex items-center">
+            Add Product
+          </button>
+        </Link>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {products.map((product) => (
+          <div key={product.id} className="border p-4 rounded flex flex-col relative">
+            <img
               src={product.img}
               alt={product.name}
-              layout="fill"
-              objectFit="cover"
-              className="rounded-t-lg"
+              className="w-full h-auto mb-4"
             />
+            <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
+            <p className="mb-2">
+              <strong>Price:</strong> {product.price}
+            </p>
+            <p className="mb-2">
+              <strong>Category:</strong> {product.category}
+            </p>
+            <p className="mb-2">
+              <strong>Season:</strong> {product.season}
+            </p>
+            <p className="mb-2">
+              <strong>Color:</strong> {product.color}
+            </p>
+            <div className="flex space-x-2 mb-2">
+              {product.sizes.map((size, index) => (
+                <span
+                  key={index}
+                  className="px-2 py-1 border border-gray-300 rounded bg-gray-100 text-gray-600 cursor-default"
+                >
+                  {size}
+                </span>
+              ))}
+            </div>
+            <div className="flex justify-between items-center">
+              <Link
+                href={`/product/${product.id}`}
+                className="text-blue-500 hover:underline"
+              >
+                View Details
+              </Link>
+              <button
+                onClick={() => handleDelete(product.id)}
+                className="mt-2 text-red-600 hover:text-red-500"
+              >
+                Delete
+              </button>
+            </div>
           </div>
-          <div className="p-4 space-y-2">
-            <h2 className="text-lg font-semibold">{product.name}</h2>
-            <p className="text-gray-500">Category: {product.category}</p>
-            <p className="text-gray-700">Price: {product.price}</p>
-            <p className="text-gray-500">Color: {product.color}</p>
-            <p className="text-gray-500">Season: {product.season}</p>
-            <p className="text-gray-500">Sizes: {product.sizes.join(", ")}</p>
-            <button
-              onClick={() => handleViewDetails(product.id)}
-              className="mt-4 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 w-full"
-            >
-              View Details
-            </button>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
-
+}
