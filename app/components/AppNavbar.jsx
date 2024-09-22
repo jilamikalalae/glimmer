@@ -13,7 +13,6 @@ import MenuList from "@mui/material/MenuList";
 import Stack from "@mui/material/Stack";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import HomeNavbar from "@/components/HomeNavbar";
 
 
 const AppNavbar = () => {

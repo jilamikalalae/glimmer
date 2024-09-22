@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { UploadButton } from "../../utils/uploadthing"; 
 
 export default function AddProduct() {
   const [newProduct, setNewProduct] = useState({
@@ -14,6 +15,7 @@ export default function AddProduct() {
     sizes: [],
   });
   const [newSize, setNewSize] = useState('');
+  const [uploadedImages, setUploadedImages] = useState([]); // To store uploaded image URLs
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -29,6 +31,18 @@ export default function AddProduct() {
       }));
       setNewSize('');
     }
+  };
+
+  const handleUploadComplete = (res) => {
+    console.log("Files: ", res);
+    alert("Upload Completed");
+    // Assuming the response contains URLs of uploaded images
+    setUploadedImages(res.map(file => file.url)); // Store uploaded image URLs
+    setNewProduct(prev => ({ ...prev, img: res[0].url })); // Set the first uploaded image as product image
+  };
+
+  const handleUploadError = (error) => {
+    alert(`ERROR! ${error.message}`);
   };
 
   const handleSubmit = (e) => {
@@ -106,14 +120,19 @@ export default function AddProduct() {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Image URL</label>
-          <input
-            type="text"
-            name="img"
-            value={newProduct.img}
-            onChange={handleChange}
-            className="mt-1 block w-full border border-gray-300 rounded p-2"
-            required
+          <label className="block text-sm font-medium text-gray-700">Upload Image</label>
+          <UploadButton
+            endpoint="imageUploader"
+            onClientUploadComplete={(res) => {
+                // Do something with the response
+                console.log("Files: ", res);
+                // const imgUrl = res[0]
+                alert("Upload Completed");
+            }}
+            onUploadError={(error) => {
+                // Do something with the error.
+                alert(`ERROR! ${error.message}`);
+            }}
           />
         </div>
         <div>

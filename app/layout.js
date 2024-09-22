@@ -1,9 +1,9 @@
 import localFont from "next/font/local";
 import "./globals.css";
-import AppNavbar from "@/components/AppNavbar";
 import { Roboto } from "next/font/google";
 import { Suspense } from "react";
 import { AuthProvider } from "./Providers";
+import AuthLayout from "./AuthLayout"; // Import the AuthLayout component
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -18,7 +18,7 @@ const geistMono = localFont({
 
 const roboto = Roboto({
   subsets: ["latin"],
-  weight: ["100", "400", "500", "700", "900"], // Specify the font weights you want to use
+  weight: ["100", "400", "500", "700", "900"],
 });
 
 export const metadata = {
@@ -30,9 +30,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={roboto.className}>
-
         <Suspense>
-          <main><AuthProvider><AppNavbar />{children}</AuthProvider></main>
+          <AuthProvider>
+            <AuthLayout>{children}</AuthLayout> 
+          </AuthProvider>
         </Suspense>
       </body>
     </html>

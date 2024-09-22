@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react'; 
 
 export default function LoginForm() {
   const router = useRouter();
@@ -12,34 +13,18 @@ export default function LoginForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!email || !password) {
-      setError("Please fill in both email and password.");
-      return;
-    }
-
-    try {
-
-      const res = await fetch('api/login', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-
-      if (res.ok) {
-        const form = e.target;
-        form.reset();
-        router.push('/');  // Navigate to the home page after successful login
-      } else {
-        setError("Invalid email or password. Please try again.");
-      }
-    } catch (error) {
-      console.log("Error during login.");
+  
+    const res = await signIn("credentials", {
+      email, 
+      password, 
+      redirect: false,
+    });
+  
+    if (res.error) {
+      setError("Invalid credentials");
+    } else {
+      console.log("Navigating to /home");
+      router.replace("/home");
     }
   };
 
@@ -58,7 +43,8 @@ export default function LoginForm() {
               Email address
             </label>
             <div className="mt-2">
-              <input onChange={(e) => setEmail(e.target.value)}
+              <input 
+                onChange={(e) => setEmail(e.target.value)}
                 id="email"
                 name="email"
                 type="email"
@@ -74,7 +60,8 @@ export default function LoginForm() {
               Password
             </label>
             <div className="mt-2">
-              <input onChange={(e) => setPassword(e.target.value)}
+              <input 
+                onChange={(e) => setPassword(e.target.value)}
                 id="password"
                 name="password"
                 type="password"
@@ -86,7 +73,7 @@ export default function LoginForm() {
           </div>
 
           {error && (
-            <div className="text-sm font-medium text-red-500">
+            <div className="text-sm font-medium text-red-500 mt-2">
               {error}
             </div>
           )}

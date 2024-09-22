@@ -1,15 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import HomeNavbar from "../components/HomeNavbar"; // Import your navbar component
 
 export default function Home() {
   const router = useRouter();
 
   return (
     <>
-      <HomeNavbar /> 
-      
       <div
         className="bg-yellow-300 w-full h-96 relative"
         style={{
