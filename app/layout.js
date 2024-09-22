@@ -3,6 +3,7 @@ import "./globals.css";
 import AppNavbar from "@/components/AppNavbar";
 import { Roboto } from "next/font/google";
 import { Suspense } from "react";
+import { AuthProvider } from "./Providers";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,10 +30,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={roboto.className}>
-        <AppNavbar />
 
         <Suspense>
-          <main>{children}</main>
+          <main><AuthProvider><AppNavbar />{children}</AuthProvider></main>
         </Suspense>
       </body>
     </html>

@@ -6,22 +6,23 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 const products = [
-  { id: 1, name: "Classy Blazer", price: "$20/week", color: "brown", category: "Men", season: "winter", img: "/image/turtleneck.jpeg", sizes: ["XS", "S", "M", "L"] },
-  { id: 2, name: "Fur cuffed cardigan", price: "$30/week", color: "cream", category: "Women", season: "fall", img: "/image/fur-cuffed-cardigan.jpeg", sizes: ["S", "M", "L"] },
+  { id: 1, name: "Classy Blazer", price: "$20/week", color: "brown", category: "Women", season: "winter", img: "/image_woman/turtleneck.jpeg", sizes: ["XS", "S", "M", "L"] },
+  { id: 2, name: "Fur cuffed cardigan", price: "$30/week", color: "cream", category: "Women", season: "fall", img: "/image_woman/fur-cuffed-cardigan.jpeg", sizes: ["S", "M", "L"] },
+  { id: 3, name: "Shirt", price: "$30/week", color: "cream", category: "Men", season: "fall", img: "/image_men/shirt.jpeg", sizes: ["S", "M", "L"] },
 ];
 
 export default function ProductDetails({ params }) {
-  const { id } = params; // Get the dynamic product ID
+  const { id } = params;
   const [product, setProduct] = useState(products.find(p => p.id === parseInt(id)));
   const [isEditing, setIsEditing] = useState(false);
   const [editedProduct, setEditedProduct] = useState({ ...product });
   const [newSize, setNewSize] = useState('');
-  const router = useRouter(); // Get router instance
+  const router = useRouter();
 
   const handleEdit = () => setIsEditing(true);
   const handleDone = () => {
     setIsEditing(false);
-    setProduct(editedProduct); // Save the edited product details
+    setProduct(editedProduct);
   };
 
   const handleChange = (e) => {
@@ -35,12 +36,12 @@ export default function ProductDetails({ params }) {
         ...prev,
         sizes: [...prev.sizes, newSize]
       }));
-      setNewSize(''); // Clear the input field
+      setNewSize('');
     }
   };
 
   const handleBack = () => {
-    router.back(); // Navigate back to the previous page
+    router.back();
   };
 
   if (!product) return <p>Product not found</p>;
@@ -108,13 +109,15 @@ export default function ProductDetails({ params }) {
                   {!isEditing ? (
                     product.category
                   ) : (
-                    <input
-                      type="text"
+                    <select
                       name="category"
                       value={editedProduct.category}
                       onChange={handleChange}
                       className="w-full border border-gray-300 p-1 rounded"
-                    />
+                    >
+                      <option value="Men">Men</option>
+                      <option value="Women">Women</option>
+                    </select>
                   )}
                 </dd>
               </div>
@@ -183,7 +186,7 @@ export default function ProductDetails({ params }) {
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 flex flex-wrap gap-2">
                   {!isEditing ? (
                     product.sizes.map((size, index) => (
-                      <button key={index} className="border border-gray-300 p-2 rounded">
+                      <button key={index} className="border border-gray-300 p-2 rounded bg-[#F3D0D7]">
                         {size}
                       </button>
                     ))
@@ -193,7 +196,7 @@ export default function ProductDetails({ params }) {
                         <button
                           key={index}
                           className={`border border-gray-300 p-2 rounded ${
-                            editedProduct.sizes.includes(size) ? 'bg-indigo-600 text-white' : ''
+                            editedProduct.sizes.includes(size) ? 'bg-[#F3D0D7] text-white' : 'bg-gray-200'
                           }`}
                           onClick={() =>
                             setEditedProduct(prev => ({
@@ -201,35 +204,35 @@ export default function ProductDetails({ params }) {
                               sizes: prev.sizes.includes(size)
                                 ? prev.sizes.filter(s => s !== size)
                                 : [...prev.sizes, size],
-                            }))
-                          }
-                        >
-                          {size}
-                        </button>
-                      ))}
-                      <div className="flex items-center gap-2 mt-4">
-                      <input
+                              }))
+                            }
+                          >
+                            {size}
+                          </button>
+                        ))}
+                        <div className="flex gap-2 mt-4">
+                          <input
                             type="text"
                             value={newSize}
                             onChange={(e) => setNewSize(e.target.value)}
-                            placeholder="New size"
-                            className="border border-gray-300 p-2 rounded w-full"
+                            className="border border-gray-300 p-2 rounded"
+                            placeholder="Add new size"
                           />
-                        <button
-                          onClick={handleAddSize}
-                          className="bg-indigo-600 text-white p-2 rounded flex items-center"
-                        >
-                          <FaPlus className="mr-2" /> Add Size
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </dd>
-              </div>
-            </dl>
+                          <button
+                            onClick={handleAddSize}
+                            className="bg-[#F3D0D7] text-white border border-gray-300 p-2 rounded flex items-center"
+                          >
+                            <FaPlus className="mr-2" /> Add Size
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </dd>
+                </div>
+              </dl>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }

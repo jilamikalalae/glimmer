@@ -1,4 +1,15 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  experimental: {
+    instrumentationHook: true,
+  },
+  images: {
+    domains: [
+      "www.fastsimon.com",
+      "assets.vogue.com",
+      "i.pinimg.com", // Add other image hostnames here as needed
+    ],
+  },
+};
 
 export default nextConfig;
