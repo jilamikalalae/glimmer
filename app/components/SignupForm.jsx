@@ -30,12 +30,12 @@ export default function SignupForm() {
         body: JSON.stringify({ email }),
       });
 
-      const { user } = await resUserExists.json();
+      const { error } = await resUserExists.json();
       
-      console.log(user); // Debugging: Check what the API returns
+      console.log(error); // Debugging: Check what the API returns
 
-      if (user) {
-        setError("User already exists.");
+      if (error) {
+        setError(error);
         return;
       }
 
