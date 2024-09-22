@@ -47,9 +47,9 @@ const AppNavbar = () => {
     setOpen(false);
   };
   
-  return (
-    <HomeNavbar/>
-  );
+  // return (
+  //   <HomeNavbar/>
+  // );
   return (
     <nav className="p-5 bg-white shadow md:flex md:items-center md:justify-between sticky top-0 z-50 drop-shadow-lg">
       <div className="flex justify-between items-center">
