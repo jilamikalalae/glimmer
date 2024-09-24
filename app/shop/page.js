@@ -1,5 +1,7 @@
 "use client";
+
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 
 const initialProducts = [
@@ -39,7 +41,7 @@ export default function Shop() {
   const [products, setProducts] = useState(initialProducts);
 
   const handleDelete = (id) => {
-    setProducts(products.filter(product => product.id !== id));
+    setProducts(products.filter((product) => product.id !== id));
   };
 
   return (
@@ -54,8 +56,11 @@ export default function Shop() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {products.map((product) => (
-          <div key={product.id} className="border p-4 rounded flex flex-col relative">
-            <img
+          <div
+            key={product.id}
+            className="border p-4 rounded flex flex-col relative"
+          >
+            <Image
               src={product.img}
               alt={product.name}
               className="w-full h-auto mb-4"
