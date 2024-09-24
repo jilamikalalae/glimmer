@@ -1,33 +1,33 @@
-"use client"; // Ensures the component is treated as a client component
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function AddProduct() {
   const [newProduct, setNewProduct] = useState({
-    name: '',
-    price: '',
-    color: '',
-    category: 'Men',
-    season: 'Winter',
-    img: '',
+    name: "",
+    price: "",
+    color: "",
+    category: "Men",
+    season: "Winter",
+    img: "",
     sizes: [],
   });
-  const [newSize, setNewSize] = useState('');
+  const [newSize, setNewSize] = useState("");
   const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewProduct(prev => ({ ...prev, [name]: value }));
+    setNewProduct((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleAddSize = () => {
     if (newSize && !newProduct.sizes.includes(newSize)) {
-      setNewProduct(prev => ({
+      setNewProduct((prev) => ({
         ...prev,
-        sizes: [...prev.sizes, newSize]
+        sizes: [...prev.sizes, newSize],
       }));
-      setNewSize('');
+      setNewSize("");
     }
   };
 
@@ -37,7 +37,7 @@ export default function AddProduct() {
     console.log("New product added:", newProduct);
 
     // Redirect to the Shop page
-    router.push('/');
+    router.push("/");
   };
 
   return (
@@ -45,7 +45,9 @@ export default function AddProduct() {
       <h1 className="text-2xl font-bold mb-4">Add New Product</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Product Name</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Product Name
+          </label>
           <input
             type="text"
             name="name"
@@ -56,7 +58,9 @@ export default function AddProduct() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Price</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Price
+          </label>
           <input
             type="text"
             name="price"
@@ -67,7 +71,9 @@ export default function AddProduct() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Color</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Color
+          </label>
           <input
             type="text"
             name="color"
@@ -78,7 +84,9 @@ export default function AddProduct() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Category</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Category
+          </label>
           <select
             name="category"
             value={newProduct.category}
@@ -91,7 +99,9 @@ export default function AddProduct() {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Season</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Season
+          </label>
           <select
             name="season"
             value={newProduct.season}
@@ -106,7 +116,9 @@ export default function AddProduct() {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Image URL</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Image URL
+          </label>
           <input
             type="text"
             name="img"
@@ -117,7 +129,9 @@ export default function AddProduct() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Sizes</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Sizes
+          </label>
           <div className="flex flex-wrap gap-2 mb-2">
             {newProduct.sizes.map((size, index) => (
               <span
