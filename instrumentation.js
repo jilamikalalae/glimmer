@@ -1,4 +1,4 @@
-import connect from "./lib/db.js";
+import connect from "@/lib/db.js";
 
 export async function register() {
   console.log("Connecting to database...");
