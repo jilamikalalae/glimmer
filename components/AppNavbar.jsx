@@ -13,8 +13,7 @@ import MenuList from "@mui/material/MenuList";
 import Stack from "@mui/material/Stack";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import HomeNavbar from "@/components/HomeNavbar";
-
+import { signOut } from "next-auth/react";
 
 const AppNavbar = () => {
   const { data: session } = useSession();
@@ -22,14 +21,6 @@ const AppNavbar = () => {
   const [open, setOpen] = useState(false);
   const anchorRef = React.useRef(null);
   const router = useRouter();
-
-  useEffect(() => {
-    if (session) {
-      console.log("Already Login");
-    } else {
-      console.log("Not Login");
-    }
-  }, [session]);
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -46,10 +37,38 @@ const AppNavbar = () => {
 
     setOpen(false);
   };
-  
-  // return (
-  //   <HomeNavbar/>
-  // );
+
+  const handleSignOut = () => {
+    signOut({ callbackUrl: "/" });
+  };
+
+  const GuestDropDown = (
+    <>
+      <MenuList autoFocusItem={open} id="composition-menu">
+        <MenuItem onClick={(event) => handleClose(event, "/auth/login")}>
+          Login
+        </MenuItem>
+        <MenuItem onClick={(event) => handleClose(event, "/auth/signup")}>
+          Sign Up
+        </MenuItem>
+      </MenuList>
+    </>
+  );
+
+  const UserDropDown = (
+    <>
+      <MenuList autoFocusItem={open} id="composition-menu">
+        <MenuItem onClick={(event) => handleClose(event, "/shop")}>
+          My shop
+        </MenuItem>
+        <MenuItem onClick={(event) => handleClose(event, "/account")}>
+          My account
+        </MenuItem>
+        <MenuItem onClick={handleSignOut}>Logout</MenuItem>
+      </MenuList>
+    </>
+  );
+
   return (
     <nav className="p-5 bg-white shadow md:flex md:items-center md:justify-between sticky top-0 z-50 drop-shadow-lg">
       <div className="flex justify-between items-center">
@@ -72,15 +91,34 @@ const AppNavbar = () => {
         </span>
       </div>
 
-      <ul className={`md:flex md:items-center z-[-1] md:z-auto md:static absolute bg-white w-full left-0 md:w-auto md:py-0 py-4 md:pl-0 pl-7 md:opacity-100 transition-all ease-in duration-500 ${isMenuOpen ? "top-[80px] opacity-100" : "top-[-400px] opacity-0"}`}>
+      <ul
+        className={`md:flex md:items-center z-[-1] md:z-auto md:static absolute bg-white w-full left-0 md:w-auto md:py-0 py-4 md:pl-0 pl-7 md:opacity-100 transition-all ease-in duration-500 ${
+          isMenuOpen ? "top-[80px] opacity-100" : "top-[-400px] opacity-0"
+        }`}
+      >
         <li className="mx-4 my-6 md:my-0">
-          <button onClick={() => router.push("/")} className="text-xl hover:text-pink-400 duration-100">HOME</button>
+          <button
+            onClick={() => router.push("/")}
+            className="text-xl hover:text-pink-400 duration-100"
+          >
+            HOME
+          </button>
         </li>
         <li className="mx-4 my-6 md:my-0">
-          <button onClick={() => router.push("/women")} className="text-xl hover:text-pink-400 duration-100">WOMEN</button>
+          <button
+            onClick={() => router.push("/women")}
+            className="text-xl hover:text-pink-400 duration-100"
+          >
+            WOMEN
+          </button>
         </li>
         <li className="mx-4 my-6 md:my-0">
-          <button onClick={() => router.push("/men")} className="text-xl hover:text-pink-400 duration-100">MEN</button>
+          <button
+            onClick={() => router.push("/men")}
+            className="text-xl hover:text-pink-400 duration-100"
+          >
+            MEN
+          </button>
         </li>
 
         {/* Account Dropdown */}
@@ -94,7 +132,7 @@ const AppNavbar = () => {
               onClick={handleToggle}
               className="bg-transparent text-gray-700 focus:outline-none"
             >
-              <AccountCircleIcon className="text-pink-400 text-3xl" /> {/* Change color to pink */}
+              <AccountCircleIcon className="text-pink-400 text-3xl" />{" "}
             </button>
             <Popper
               open={open}
@@ -114,10 +152,7 @@ const AppNavbar = () => {
                 >
                   <Paper>
                     <ClickAwayListener onClickAway={handleClose}>
-                      <MenuList autoFocusItem={open} id="composition-menu">
-                        <MenuItem onClick={(event) => handleClose(event, "/login")}>Login</MenuItem>
-                        <MenuItem onClick={(event) => handleClose(event, "/signup")}>Sign Up</MenuItem>
-                      </MenuList>
+                      {session ? UserDropDown : GuestDropDown}
                     </ClickAwayListener>
                   </Paper>
                 </Grow>

@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 export default function SignupForm() {
+  const { data: session } = useSession();
   const router = useRouter();
 
   const [name, setName] = useState("");
@@ -11,6 +14,12 @@ export default function SignupForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (session) {
+      router.replace("/");
+    }
+  }, [session]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,29 +30,10 @@ export default function SignupForm() {
     }
 
     try {
-      // Check if user already exists
-      const resUserExists = await fetch('/api/userexists', {
+      const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      const { error } = await resUserExists.json();
-      
-      console.log(error); // Debugging: Check what the API returns
-
-      if (error) {
-        setError(error);
-        return;
-      }
-
-      // Register new user
-      const res = await fetch('/api/signup', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name,
@@ -56,12 +46,22 @@ export default function SignupForm() {
       if (res.ok) {
         const form = e.target;
         form.reset();
-        router.push('/login');  // Navigate to a success page or login page after signup
+
+        const res = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+
+        router.replace("/");
       } else {
-        setError("User registration failed.");
+        const { error } = await res.json();
+        if (error) {
+          setError(error);
+          return;
+        }
       }
     } catch (error) {
-      console.log("Error during registration:", error);
       setError("An error occurred. Please try again.");
     }
   };
@@ -77,11 +77,15 @@ export default function SignupForm() {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
               Full Name
             </label>
             <div className="mt-2">
-              <input onChange={(e) => setName(e.target.value)}
+              <input
+                onChange={(e) => setName(e.target.value)}
                 id="name"
                 name="name"
                 type="text"
@@ -92,11 +96,15 @@ export default function SignupForm() {
           </div>
 
           <div>
-            <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
               Username
             </label>
             <div className="mt-2">
-              <input onChange={(e) => setUsername(e.target.value)}
+              <input
+                onChange={(e) => setUsername(e.target.value)}
                 id="username"
                 name="username"
                 type="text"
@@ -107,11 +115,15 @@ export default function SignupForm() {
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
               Email address
             </label>
             <div className="mt-2">
-              <input onChange={(e) => setEmail(e.target.value)}
+              <input
+                onChange={(e) => setEmail(e.target.value)}
                 id="email"
                 name="email"
                 type="email"
@@ -123,11 +135,15 @@ export default function SignupForm() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
               Password
             </label>
             <div className="mt-2">
-              <input onChange={(e) => setPassword(e.target.value)}
+              <input
+                onChange={(e) => setPassword(e.target.value)}
                 id="password"
                 name="password"
                 type="password"
@@ -139,9 +155,7 @@ export default function SignupForm() {
           </div>
 
           {error && (
-            <div className="text-sm font-medium text-red-500">
-              {error}
-            </div>
+            <div className="text-sm font-medium text-red-500">{error}</div>
           )}
 
           <div>
@@ -155,9 +169,9 @@ export default function SignupForm() {
         </form>
 
         <p className="mt-10 text-center text-sm text-gray-500">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <button
-            onClick={() => router.push('/login')}
+            onClick={() => router.push("/login")}
             className="font-semibold leading-6 text-pink-600 hover:text-pink-500 focus:outline-none"
           >
             Sign in

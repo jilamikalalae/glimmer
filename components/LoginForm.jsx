@@ -1,14 +1,23 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 export default function LoginForm() {
+  const { data: session } = useSession();
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (session) {
+      router.replace("/");
+    }
+  }, [session]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,27 +28,20 @@ export default function LoginForm() {
     }
 
     try {
-
-      const res = await fetch('api/login', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
       });
 
-      if (res.ok) {
-        const form = e.target;
-        form.reset();
-        router.push('/');  // Navigate to the home page after successful login
-      } else {
-        setError("Invalid email or password. Please try again.");
+      if (res.error) {
+        setError("Your password or email is invalid");
+        return;
       }
+
+      router.replace("/");
     } catch (error) {
-      console.log("Error during login.");
+      console.log(error);
     }
   };
 
@@ -54,11 +56,15 @@ export default function LoginForm() {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
               Email address
             </label>
             <div className="mt-2">
-              <input onChange={(e) => setEmail(e.target.value)}
+              <input
+                onChange={(e) => setEmail(e.target.value)}
                 id="email"
                 name="email"
                 type="email"
@@ -70,11 +76,15 @@ export default function LoginForm() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
               Password
             </label>
             <div className="mt-2">
-              <input onChange={(e) => setPassword(e.target.value)}
+              <input
+                onChange={(e) => setPassword(e.target.value)}
                 id="password"
                 name="password"
                 type="password"
@@ -86,9 +96,7 @@ export default function LoginForm() {
           </div>
 
           {error && (
-            <div className="text-sm font-medium text-red-500">
-              {error}
-            </div>
+            <div className="text-sm font-medium text-red-500">{error}</div>
           )}
 
           <div>
@@ -102,9 +110,9 @@ export default function LoginForm() {
         </form>
 
         <p className="mt-10 text-center text-sm text-gray-500">
-          Don&apos;t have an account?{' '}
+          Don&apos;t have an account?{" "}
           <button
-            onClick={() => router.push('/signup')} // Navigate to the Signup page
+            onClick={() => router.push("/signup")} // Navigate to the Signup page
             className="font-semibold leading-6 text-pink-600 hover:text-pink-500 focus:outline-none"
           >
             Sign up

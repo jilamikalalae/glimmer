@@ -30,10 +30,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={roboto.className}>
-
-        <Suspense>
-          <main><AuthProvider><AppNavbar />{children}</AuthProvider></main>
-        </Suspense>
+        <AuthProvider>
+          <Suspense>
+            <main>
+              <AppNavbar />
+              {children}
+            </main>
+          </Suspense>
+        </AuthProvider>
       </body>
     </html>
   );
