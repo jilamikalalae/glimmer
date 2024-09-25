@@ -180,7 +180,7 @@ export default function Women() {
                   {selectedSizes[selectedProduct.id]}
                 </p>{" "}
                 {/* Display selected size */}
-                <Image
+                <img
                   src="/qr-code/qrcode.png"
                   alt="QR Code for Payment"
                   className="w-full h-auto mb-4"
