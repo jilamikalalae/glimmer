@@ -1,4 +1,5 @@
 "use client";
+import { signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { validateSession } from "@/utils/auth";
@@ -85,7 +86,8 @@ export default function AccountSettings() {
   };
 
   const handleLogout = () => {
-    alert("You have been logged out.");
+    setLoading(true);
+    signOut({ callbackUrl: "/auth/login" });
   };
 
   const handleSaveChanges = async (e) => {
