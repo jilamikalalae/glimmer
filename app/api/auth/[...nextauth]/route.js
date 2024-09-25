@@ -1,6 +1,6 @@
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { dbClientConnect } from "@/lib/db";
+import { dbConnect } from "@/lib/db";
 import User from "@/models/user";
 import bcrypt from "bcryptjs";
 
@@ -13,7 +13,6 @@ const authOptions = {
         const { email, password } = credentials;
 
         try {
-          await dbClientConnect();
           const user = await User.findOne({ email });
 
           if (!user) {
@@ -40,16 +39,19 @@ const authOptions = {
   pages: {
     signIn: "auth/login",
   },
+  debug: true,
   callbacks: {
-    async session({ session, user, token }) {
-      if (session && user) {
-        session.user.id = user.id;
-      }
-      session.user = token;
-      return session;
-    },
     async jwt({ token, user }) {
-      return { ...token, ...user };
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token?.id) {
+        session.user.id = token.id;
+      }
+      return session;
     },
   },
 };

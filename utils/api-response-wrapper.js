@@ -27,7 +27,7 @@ export const responseWrapper = (statusCode, data, error) => {
         response.message = "Error";
         break;
     }
-    response.error = error;
+    response.error = error.toString();
   } else {
     response.message = "Success";
   }

@@ -14,6 +14,7 @@ import Stack from "@mui/material/Stack";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
+import LinearLoading from "./LinearLoading";
 
 const AppNavbar = () => {
   const { data: session } = useSession();
@@ -21,6 +22,7 @@ const AppNavbar = () => {
   const [open, setOpen] = useState(false);
   const anchorRef = React.useRef(null);
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -39,7 +41,8 @@ const AppNavbar = () => {
   };
 
   const handleSignOut = () => {
-    signOut({ callbackUrl: "/" });
+    setLoading(true);
+    signOut({ callbackUrl: "/auth/login" });
   };
 
   const GuestDropDown = (
@@ -70,7 +73,7 @@ const AppNavbar = () => {
   );
 
   return (
-    <nav className="p-5 bg-white shadow md:flex md:items-center md:justify-between sticky top-0 z-50 drop-shadow-lg">
+    <nav className="p-5 bg-white shadow md:flex md:items-center md:justify-between sticky top-0 z-50 drop-shadow-sm">
       <div className="flex justify-between items-center">
         <span className="text-2xl cursor-pointer">
           <Image

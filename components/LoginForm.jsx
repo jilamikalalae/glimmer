@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useSession } from "next-auth/react";
+import LinearLoading from "./LinearLoading";
 
 export default function LoginForm() {
   const { data: session } = useSession();
@@ -12,12 +13,17 @@ export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (session) {
       router.replace("/");
     }
   }, [session, router]);
+
+  if (loading) {
+    return LinearLoading();
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,6 +34,7 @@ export default function LoginForm() {
     }
 
     try {
+      setLoading(true);
       const res = await signIn("credentials", {
         email,
         password,
@@ -112,7 +119,7 @@ export default function LoginForm() {
         <p className="mt-10 text-center text-sm text-gray-500">
           Don&apos;t have an account?{" "}
           <button
-            onClick={() => router.push("/signup")} // Navigate to the Signup page
+            onClick={() => router.push("signup")} // Navigate to the Signup page
             className="font-semibold leading-6 text-pink-600 hover:text-pink-500 focus:outline-none"
           >
             Sign up

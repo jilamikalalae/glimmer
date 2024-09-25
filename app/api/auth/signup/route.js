@@ -16,6 +16,7 @@ export async function POST(req) {
 
     return responseWrapper(200, null, null);
   } catch (error) {
+    console.log(error);
     return responseWrapper(500, null, error);
   }
 }

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useSession } from "next-auth/react";
+import LinearLoading from "./LinearLoading";
 
 export default function SignupForm() {
   const { data: session } = useSession();
@@ -14,12 +15,17 @@ export default function SignupForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (session) {
       router.replace("/");
     }
   }, [session, router]);
+
+  if (loading) {
+    return LinearLoading();
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,6 +36,7 @@ export default function SignupForm() {
     }
 
     try {
+      setLoading(true);
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
