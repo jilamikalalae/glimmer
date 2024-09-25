@@ -62,6 +62,7 @@ export default function SignupForm() {
 
         router.replace("/");
       } else {
+        setLoading(true);
         const { error } = await res.json();
         if (error) {
           setError(error);
