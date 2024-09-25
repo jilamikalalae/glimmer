@@ -4,7 +4,11 @@ const nextConfig = {
     instrumentationHook: true,
   },
   images: {
-    domains: [],
+    domains: [
+      "www.fastsimon.com",
+      "assets.vogue.com",
+      "i.pinimg.com", // Add other image hostnames here as needed
+    ],
   },
 };
 
