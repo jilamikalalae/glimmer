@@ -1,5 +1,5 @@
-"use client"; 
-import { useState } from 'react';
+"use client";
+import { useState } from "react";
 
 export default function AccountSettings() {
   const [name, setName] = useState("John Doe"); // Default value
@@ -10,7 +10,11 @@ export default function AccountSettings() {
   const [isEditing, setIsEditing] = useState(false); // State to toggle edit mode
 
   const handleDeleteAccount = () => {
-    if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+    if (
+      confirm(
+        "Are you sure you want to delete your account? This action cannot be undone."
+      )
+    ) {
       alert("Your account has been deleted.");
       // Add actual deletion logic here
     }
@@ -50,7 +54,9 @@ export default function AccountSettings() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="bg-white shadow-md rounded-lg w-full max-w-2xl p-8">
         {/* Account Settings Title */}
-        <h1 className="text-3xl font-bold mb-6 text-center">Account Settings</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center">
+          Account Settings
+        </h1>
 
         {/* Edit Button */}
         <div className="flex justify-end mb-4">
@@ -113,10 +119,12 @@ export default function AccountSettings() {
           {[
             { label: "Name", value: name, setter: setName },
             { label: "Username", value: username, setter: setUsername },
-            { label: "Email", value: email, setter: setEmail }
+            { label: "Email", value: email, setter: setEmail },
           ].map(({ label, value, setter }, index) => (
             <div key={index} className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {label}
+              </label>
               <input
                 type={label === "Email" ? "email" : "text"}
                 value={value}
@@ -124,8 +132,10 @@ export default function AccountSettings() {
                 placeholder={`Enter your ${label.toLowerCase()}`}
                 disabled={!isEditing}
                 required
-                className={`border border-gray-300 rounded-md p-2 w-full focus:ring-blue-500 focus:border-blue-500 text-sm placeholder-gray-400 ${isEditing ? '' : 'bg-gray-100'}`}
-                style={{ width: '600px' }} // Set a width of 600px
+                className={`border border-gray-300 rounded-md p-2 w-full focus:ring-blue-500 focus:border-blue-500 text-sm placeholder-gray-400 ${
+                  isEditing ? "" : "bg-gray-100"
+                }`}
+                style={{ width: "600px" }} // Set a width of 600px
               />
             </div>
           ))}

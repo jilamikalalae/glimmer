@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
       <div
-        className="bg-yellow-300 w-full h-96 relative background"
+        className="w-full h-96 relative background"
         style={{
           backgroundImage:
             "url('https://www.fastsimon.com/wp-content/uploads/pexels-clint-maliq-13634354-scaled.webp')",
@@ -24,7 +24,7 @@ export default function Home() {
       </div>
 
       <div
-        className="bg-yellow-300 w-full h-96 relative background"
+        className="w-full h-96 relative background"
         style={{
           backgroundImage:
             "url('https://assets.vogue.com/photos/65ce40783192a4382aaad59a/16:9/w_1280,c_limit/00-social%20(107).jpg')",
@@ -41,7 +41,7 @@ export default function Home() {
       </div>
 
       <div
-        className="bg-yellow-300 w-full h-96 relative background"
+        className="w-full h-96 relative background"
         style={{
           backgroundImage:
             "url('https://i.pinimg.com/564x/86/16/c7/8616c7b82373d98005da7f0f18001af1.jpg')", // Example image URL
@@ -58,7 +58,7 @@ export default function Home() {
       </div>
 
       <div
-        className="bg-yellow-300 w-full h-96 relative background"
+        className="w-full h-96 relative background"
         style={{
           backgroundImage:
             "url('https://i.pinimg.com/736x/33/82/4a/33824a22638f24eb411b8d185017f1f2.jpg')", // Example image URL

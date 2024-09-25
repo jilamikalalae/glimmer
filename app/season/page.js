@@ -1,7 +1,7 @@
 "use client";
 
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import Image from "next/image"; // Assuming you're using Next.js's Image component for optimization
 
 // Example products data (you can import or fetch this in real scenarios)
 const products = [

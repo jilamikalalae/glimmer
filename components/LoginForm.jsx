@@ -17,7 +17,7 @@ export default function LoginForm() {
     if (session) {
       router.replace("/");
     }
-  }, [session]);
+  }, [session, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

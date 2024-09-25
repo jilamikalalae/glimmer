@@ -1,14 +1,62 @@
-"use client"; // Ensure it's a Client Component
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 const menProducts = [
-  { id: 1, name: "Denim Jacket", price: "$40/week", color: "Blue", season: "Winter", sizes: ["S", "M", "L", "XL"], img: "/image_men/denim jacket.jpg" },
-  { id: 2, name: "Black Shirt", price: "$60/week", color: "Black", season: "Spring", sizes: ["M", "L", "XL"], img: "/image_men/black shirt.jpg" },
-  { id: 3, name: "Brown Jacket", price: "$50/week", color: "Brown", season: "Winter", sizes: ["S", "M", "L"], img: "/image_men/brown jacket.jpg" },
-  { id: 4, name: "Gray Knit Sweater", price: "$70/week", color: "Gray", season: "Winter", sizes: ["M", "L", "XL"], img: "/image_men/gray knit sweater.jpg" },
-  { id: 5, name: "Stripe Blue Shirt", price: "$30/week", color: "Light Blue", season: "Summer", sizes: ["S", "M", "L"], img: "/image_men/stripe blue shirt.jpg" },
-  { id: 6, name: "White Polo Shirt", price: "$25/week", color: "White", season: "Winter", sizes: ["M", "L"], img: "/image_men/white polo shirt.jpg" },
+  {
+    id: 1,
+    name: "Denim Jacket",
+    price: "$40/week",
+    color: "Blue",
+    season: "Winter",
+    sizes: ["S", "M", "L", "XL"],
+    img: "/image_men/denim jacket.jpg",
+  },
+  {
+    id: 2,
+    name: "Black Shirt",
+    price: "$60/week",
+    color: "Black",
+    season: "Spring",
+    sizes: ["M", "L", "XL"],
+    img: "/image_men/black shirt.jpg",
+  },
+  {
+    id: 3,
+    name: "Brown Jacket",
+    price: "$50/week",
+    color: "Brown",
+    season: "Winter",
+    sizes: ["S", "M", "L"],
+    img: "/image_men/brown jacket.jpg",
+  },
+  {
+    id: 4,
+    name: "Gray Knit Sweater",
+    price: "$70/week",
+    color: "Gray",
+    season: "Winter",
+    sizes: ["M", "L", "XL"],
+    img: "/image_men/gray knit sweater.jpg",
+  },
+  {
+    id: 5,
+    name: "Stripe Blue Shirt",
+    price: "$30/week",
+    color: "Light Blue",
+    season: "Summer",
+    sizes: ["S", "M", "L"],
+    img: "/image_men/stripe blue shirt.jpg",
+  },
+  {
+    id: 6,
+    name: "White Polo Shirt",
+    price: "$25/week",
+    color: "White",
+    season: "Winter",
+    sizes: ["M", "L"],
+    img: "/image_men/white polo shirt.jpg",
+  },
 ];
 
 export default function Men() {
@@ -37,14 +85,14 @@ export default function Men() {
   const selectSize = (productId, size) => {
     setSelectedSizes((prev) => ({
       ...prev,
-      [productId]: selectedSizes[productId] === size ? null : size // Reselect the size or unselect it
+      [productId]: selectedSizes[productId] === size ? null : size, // Reselect the size or unselect it
     }));
   };
 
   const resetSizeSelection = (productId) => {
     setSelectedSizes((prev) => ({
       ...prev,
-      [productId]: null // Unselect the size for the product
+      [productId]: null, // Unselect the size for the product
     }));
   };
 
@@ -65,12 +113,22 @@ export default function Men() {
         {menProducts.map((product) => (
           <div key={product.id} className="border p-4 rounded">
             <div className="w-full h-90 mb-4">
-              <img src={product.img} alt={product.name} className="w-full h-full object-cover" />
+              <img
+                src={product.img}
+                alt={product.name}
+                className="w-full h-full object-cover"
+              />
             </div>
             <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
-            <p className="mb-2"><strong>Price:</strong> {product.price}</p>
-            <p className="mb-2"><strong>Color:</strong> {product.color}</p>
-            <p className="mb-2"><strong>Season:</strong> {product.season}</p>
+            <p className="mb-2">
+              <strong>Price:</strong> {product.price}
+            </p>
+            <p className="mb-2">
+              <strong>Color:</strong> {product.color}
+            </p>
+            <p className="mb-2">
+              <strong>Season:</strong> {product.season}
+            </p>
 
             {/* Display Available Sizes */}
             <div className="flex space-x-2 mb-2">
@@ -109,13 +167,21 @@ export default function Men() {
             <h2 className="text-xl font-bold mb-4">Scan to Pay</h2>
             {selectedProduct && (
               <>
-                <p className="mb-2 text-lg"><strong>Product:</strong> {selectedProduct.name}</p>
-                <p className="mb-2 text-lg"><strong>Price:</strong> {selectedProduct.price}</p>
-                <p className="mb-4 text-lg"><strong>Selected Size:</strong> {selectedSizes[selectedProduct.id]}</p> {/* Display selected size */}
-                <img 
-                  src="/qr-code/qrcode.png" 
-                  alt="QR Code for Payment" 
-                  className="w-full h-auto mb-4" 
+                <p className="mb-2 text-lg">
+                  <strong>Product:</strong> {selectedProduct.name}
+                </p>
+                <p className="mb-2 text-lg">
+                  <strong>Price:</strong> {selectedProduct.price}
+                </p>
+                <p className="mb-4 text-lg">
+                  <strong>Selected Size:</strong>{" "}
+                  {selectedSizes[selectedProduct.id]}
+                </p>{" "}
+                {/* Display selected size */}
+                <Image
+                  src="/qr-code/qrcode.png"
+                  alt="QR Code for Payment"
+                  className="w-full h-auto mb-4"
                 />
               </>
             )}
