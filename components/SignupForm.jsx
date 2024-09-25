@@ -70,6 +70,7 @@ export default function SignupForm() {
         }
       }
     } catch (error) {
+      setLoading(true);
       setError("An error occurred. Please try again.");
     }
   };
