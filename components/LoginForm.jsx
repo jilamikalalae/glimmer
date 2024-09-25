@@ -42,6 +42,7 @@ export default function LoginForm() {
       });
 
       if (res.error) {
+        setLoading(false);
         setError("Your password or email is invalid");
         return;
       }
