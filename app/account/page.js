@@ -1,13 +1,78 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { validateSession } from "@/utils/auth";
+import LinearLoading from "@/components/LinearLoading";
 
 export default function AccountSettings() {
-  const [name, setName] = useState("John Doe"); // Default value
-  const [username, setUsername] = useState("johndoe"); // Default value
-  const [email, setEmail] = useState("john@example.com"); // Default value
+  const { data: session, status } = useSession();
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [isEditing, setIsEditing] = useState(false); // State to toggle edit mode
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchUserData = async (userId) => {
+    try {
+      setLoading(true);
+      if (!session || !session.user) {
+        return;
+      }
+
+      const response = await fetch(`/api/v1/users/${userId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+
+      const data = await response.json();
+      if (data?.data) {
+        setName(data.data.name || "");
+        setUsername(data.data.username || "");
+        setEmail(data.data.email || "");
+        setProfilePicture(data.data.profilePicture || null);
+        setPreview(data.data.profilePicture || null);
+      }
+    } catch (err) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveUserData = async (userId) => {
+    try {
+      setLoading(true);
+
+      const response = await fetch(`/api/v1/users/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          username,
+          email,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to save user data");
+      }
+    } catch (err) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.id) {
+      const userId = session.user.id;
+      fetchUserData(userId);
+    }
+  }, [status, session]);
 
   const handleDeleteAccount = () => {
     if (
@@ -16,20 +81,23 @@ export default function AccountSettings() {
       )
     ) {
       alert("Your account has been deleted.");
-      // Add actual deletion logic here
     }
   };
 
   const handleLogout = () => {
     alert("You have been logged out.");
-    // Add actual logout logic here
   };
 
-  const handleSaveChanges = (e) => {
+  const handleSaveChanges = async (e) => {
     e.preventDefault();
-    setIsEditing(false); // Exit edit mode after saving
-    alert("Your changes have been saved.");
-    // Add actual save logic here
+    if (status === "authenticated" && session?.user?.id) {
+      const userId = session.user.id;
+
+      await saveUserData(userId);
+
+      await fetchUserData(userId);
+      setIsEditing(false);
+    }
   };
 
   const handleDeleteImage = () => {
@@ -49,6 +117,14 @@ export default function AccountSettings() {
       setProfilePicture(file);
     }
   };
+
+  if (loading) {
+    return LinearLoading();
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
