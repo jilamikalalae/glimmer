@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 
 const menProducts = [
@@ -114,7 +113,7 @@ export default function Men() {
         {menProducts.map((product) => (
           <div key={product.id} className="border p-4 rounded">
             <div className="w-full h-90 mb-4">
-              <Image
+              <img
                 src={product.img}
                 alt={product.name}
                 className="w-full h-full object-cover"
@@ -179,7 +178,7 @@ export default function Men() {
                   {selectedSizes[selectedProduct.id]}
                 </p>{" "}
                 {/* Display selected size */}
-                <Image
+                <img
                   src="/qr-code/qrcode.png"
                   alt="QR Code for Payment"
                   className="w-full h-auto mb-4"

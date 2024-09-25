@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { useState } from "react";
 
 export default function AccountSettings() {
@@ -74,7 +73,7 @@ export default function AccountSettings() {
         <div className="flex flex-col items-center mb-8">
           <label className="cursor-pointer mb-4">
             {preview ? (
-              <Image
+              <img
                 src={preview}
                 alt="Profile"
                 className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 transition-opacity duration-300"

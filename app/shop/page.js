@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useState } from "react";
 
 const initialProducts = [
@@ -60,7 +59,7 @@ export default function Shop() {
             key={product.id}
             className="border p-4 rounded flex flex-col relative"
           >
-            <Image
+            <img
               src={product.img}
               alt={product.name}
               className="w-full h-auto mb-4"
