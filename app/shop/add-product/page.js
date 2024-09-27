@@ -1,7 +1,30 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { styled } from "@mui/material/styles";
+import Button from "@mui/material/Button";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { useUploadThing } from "@/utils/uploadthing";
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
+
+const PinkButton = styled(Button)({
+  backgroundColor: "#ff99aa",
+  color: "#ffffff",
+  "&:hover": {
+    backgroundColor: "#ff6688",
+  },
+});
 
 export default function AddProduct() {
   const [newProduct, setNewProduct] = useState({
@@ -31,13 +54,26 @@ export default function AddProduct() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle product submission here (e.g., send to API or update state)
-    console.log("New product added:", newProduct);
 
-    // Redirect to the Shop page
-    router.push("/");
+    try {
+      const response = await fetch("/api/v1/clothes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newProduct),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add product");
+      }
+
+      router.back();
+    } catch (error) {
+      console.error("Error adding product:", error);
+    }
   };
 
   return (
@@ -116,17 +152,16 @@ export default function AddProduct() {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Image URL
-          </label>
-          <input
-            type="text"
-            name="img"
-            value={newProduct.img}
-            onChange={handleChange}
-            className="mt-1 block w-full border border-gray-300 rounded p-2"
-            required
-          />
+          <PinkButton
+            component="label"
+            role={undefined}
+            variant="contained"
+            tabIndex={-1}
+            startIcon={<CloudUploadIcon />}
+          >
+            Upload Image
+            <VisuallyHiddenInput type="file" multiple />
+          </PinkButton>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import User from "@/models/user";
-import { responseWrapper } from "@/utils/api-response-wrapper";
 import dbConnect from "@/lib/db";
+import { responseWrapper } from "@/utils/api-response-wrapper";
 
 export async function GET(req, { params }) {
   try {
