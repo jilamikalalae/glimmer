@@ -2,7 +2,6 @@
 import { signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { validateSession } from "@/utils/auth";
 import LinearLoading from "@/components/LinearLoading";
 
 export default function AccountSettings() {
@@ -23,7 +22,7 @@ export default function AccountSettings() {
         return;
       }
 
-      const response = await fetch(`/api/v1/users/${userId}`);
+      const response = await fetch(`/api/portal/users/${userId}`);
       if (!response.ok) {
         throw new Error("Failed to fetch user data");
       }
@@ -47,7 +46,7 @@ export default function AccountSettings() {
     try {
       setLoading(true);
 
-      const response = await fetch(`/api/v1/users/${userId}`, {
+      const response = await fetch(`/api/portal/users/${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -31,13 +30,26 @@ export default function AddProduct() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle product submission here (e.g., send to API or update state)
-    console.log("New product added:", newProduct);
 
-    // Redirect to the Shop page
-    router.push("/");
+    try {
+      const response = await fetch("/api/portal/clothes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newProduct),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add product");
+      }
+
+      router.back();
+    } catch (error) {
+      console.error("Error adding product:", error);
+    }
   };
 
   return (
