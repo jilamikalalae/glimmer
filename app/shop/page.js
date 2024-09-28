@@ -1,53 +1,69 @@
 "use client";
 
+import LinearLoading from "@/components/LinearLoading";
 import Link from "next/link";
-import { useState } from "react";
-
-const initialProducts = [
-  {
-    id: 1,
-    name: "Classy Blazer",
-    price: "$20/week",
-    color: "brown",
-    category: "Men",
-    season: "Winter",
-    img: "/image_woman/turtleneck.jpeg",
-    sizes: ["XS", "S", "M", "L"],
-  },
-  {
-    id: 2,
-    name: "Fur cuffed cardigan",
-    price: "$30/week",
-    color: "cream",
-    category: "Women",
-    season: "Winter",
-    img: "/image_woman/fur-cuffed-cardigan.jpeg",
-    sizes: ["S", "M", "L"],
-  },
-  {
-    id: 3,
-    name: "Shirt",
-    price: "$20/week",
-    color: "cream",
-    category: "Men",
-    season: "Fall",
-    img: "/image_men/shirt.jpeg",
-    sizes: ["S", "M", "L"],
-  },
-];
+import { useState, useEffect } from "react";
 
 export default function Shop() {
-  const [products, setProducts] = useState(initialProducts);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const handleDelete = (id) => {
-    setProducts(products.filter((product) => product.id !== id));
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch("/api/portal/clothes");
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        setProducts(result.data);
+      } else {
+        setError(result.message || "Failed to fetch products");
+      }
+    } catch (err) {
+      setError("Error fetching products");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/portal/clothes/${id}`, {
+        method: "DELETE",
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setProduct(editedProduct);
+        setIsEditing(false);
+      } else {
+        setError(result.message || "Failed to update product");
+      }
+    } catch (err) {
+      setError("Error updating product");
+    } finally {
+      await fetchProducts();
+      setLoading(false);
+    }
+    // setProducts(products.filter((product) => product.id !== id));
+  };
+
+  if (loading) {
+    return LinearLoading();
+  }
+  // if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-4">Shop</h1>
       <div className="mb-4">
-        <Link href="/add-product">
+        <Link href="/shop/add-product">
           <button className="bg-[#F3D0D7] text-white border border-gray-300 p-2 rounded flex items-center">
             Add Product
           </button>
@@ -60,7 +76,7 @@ export default function Shop() {
             className="border p-4 rounded flex flex-col relative"
           >
             <img
-              src={product.img}
+              src={product.imageUrl}
               alt={product.name}
               className="w-full h-auto mb-4"
             />
@@ -89,13 +105,13 @@ export default function Shop() {
             </div>
             <div className="flex justify-between items-center">
               <Link
-                href={`/product/${product.id}`}
+                href={`/product/${product._id}`}
                 className="text-blue-500 hover:underline"
               >
                 View Details
               </Link>
               <button
-                onClick={() => handleDelete(product.id)}
+                onClick={() => handleDelete(product._id)}
                 className="mt-2 text-red-600 hover:text-red-500"
               >
                 Delete

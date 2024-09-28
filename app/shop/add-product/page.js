@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -10,7 +9,7 @@ export default function AddProduct() {
     color: "",
     category: "Men",
     season: "Winter",
-    img: "",
+    imageUrl: "",
     sizes: [],
   });
   const [newSize, setNewSize] = useState("");
@@ -31,13 +30,26 @@ export default function AddProduct() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle product submission here (e.g., send to API or update state)
-    console.log("New product added:", newProduct);
 
-    // Redirect to the Shop page
-    router.push("/");
+    try {
+      const response = await fetch("/api/portal/clothes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newProduct),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add product");
+      }
+
+      router.back();
+    } catch (error) {
+      console.error("Error adding product:", error);
+    }
   };
 
   return (
@@ -121,8 +133,8 @@ export default function AddProduct() {
           </label>
           <input
             type="text"
-            name="img"
-            value={newProduct.img}
+            name="imageUrl"
+            value={newProduct.imageUrl}
             onChange={handleChange}
             className="mt-1 block w-full border border-gray-300 rounded p-2"
             required

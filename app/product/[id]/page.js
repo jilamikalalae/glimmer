@@ -1,64 +1,117 @@
 "use client"; // Ensures the component is treated as a client component
 
-import { useState } from 'react';
-import { FaEdit, FaCheck, FaArrowLeft, FaPlus } from 'react-icons/fa';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-
-const products = [
-  { id: 1, name: "Classy Blazer", price: "$20/week", color: "brown", category: "Women", season: "winter", img: "/image_woman/turtleneck.jpeg", sizes: ["XS", "S", "M", "L"] },
-  { id: 2, name: "Fur cuffed cardigan", price: "$30/week", color: "cream", category: "Women", season: "fall", img: "/image_woman/fur-cuffed-cardigan.jpeg", sizes: ["S", "M", "L"] },
-  { id: 3, name: "Shirt", price: "$30/week", color: "cream", category: "Men", season: "fall", img: "/image_men/shirt.jpeg", sizes: ["S", "M", "L"] },
-];
+import { useState, useEffect } from "react";
+import { FaEdit, FaCheck, FaArrowLeft, FaPlus } from "react-icons/fa";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import LinearLoading from "@/components/LinearLoading";
 
 export default function ProductDetails({ params }) {
-  const { id } = params;
-  const [product, setProduct] = useState(products.find(p => p.id === parseInt(id)));
+  const { id } = params; // Product ID from URL params
+  const [product, setProduct] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedProduct, setEditedProduct] = useState({ ...product });
-  const [newSize, setNewSize] = useState('');
+  const [editedProduct, setEditedProduct] = useState(null);
+  const [newSize, setNewSize] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const router = useRouter();
 
+  // Fetch product details from the API
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`/api/portal/clothes/${id}`);
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          setProduct(result.data);
+          setEditedProduct(result.data); // Initialize the editable product state
+        } else {
+          setError(result.message || "Failed to fetch product");
+        }
+      } catch (err) {
+        setError("Error fetching product");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
   const handleEdit = () => setIsEditing(true);
-  const handleDone = () => {
-    setIsEditing(false);
-    setProduct(editedProduct);
+
+  const handleDone = async () => {
+    try {
+      setLoading(true);
+
+      const response = await fetch(`/api/portal/clothes/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editedProduct),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        setProduct(editedProduct);
+        setIsEditing(false);
+      } else {
+        setError(result.message || "Failed to update product");
+      }
+    } catch (err) {
+      setError("Error updating product");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEditedProduct(prev => ({ ...prev, [name]: value }));
+    setEditedProduct((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleAddSize = () => {
     if (newSize && !editedProduct.sizes.includes(newSize)) {
-      setEditedProduct(prev => ({
+      setEditedProduct((prev) => ({
         ...prev,
-        sizes: [...prev.sizes, newSize]
+        sizes: [...prev.sizes, newSize],
       }));
-      setNewSize('');
+      setNewSize("");
     }
+  };
+
+  const handleRemoveSize = (sizeToRemove) => {
+    setEditedProduct((prev) => ({
+      ...prev,
+      sizes: prev.sizes.filter((size) => size !== sizeToRemove),
+    }));
   };
 
   const handleBack = () => {
     router.back();
   };
 
-  if (!product) return <p>Product not found</p>;
+  if (loading) return LinearLoading();
 
   return (
     <div className="p-8">
       <div className="flex justify-between">
         {/* Back Button */}
-        <button onClick={handleBack} className="text-indigo-600 hover:text-indigo-500 flex items-center mb-4">
+        <button
+          onClick={handleBack}
+          className="text-indigo-600 hover:text-indigo-500 flex items-center mb-4"
+        >
           <FaArrowLeft className="mr-2" /> Back
         </button>
       </div>
       <div className="flex">
         {/* Product Image */}
         <div className="w-1/2">
-          <Image 
-            src={product.img}
+          <Image
+            src={product.imageUrl}
             alt={product.name}
             width={500}
             height={500}
@@ -69,24 +122,36 @@ export default function ProductDetails({ params }) {
         {/* Product Details */}
         <div className="w-1/2 pl-8">
           <div className="flex justify-between">
-            <h3 className="text-base font-semibold leading-7 text-gray-900">Product Information</h3>
+            <h3 className="text-base font-semibold leading-7 text-gray-900">
+              Product Information
+            </h3>
             {!isEditing ? (
-              <button onClick={handleEdit} className="text-indigo-600 hover:text-indigo-500 flex items-center">
+              <button
+                onClick={handleEdit}
+                className="text-indigo-600 hover:text-indigo-500 flex items-center"
+              >
                 <FaEdit className="mr-2" /> Edit
               </button>
             ) : (
-              <button onClick={handleDone} className="text-green-600 hover:text-green-500 flex items-center">
+              <button
+                onClick={handleDone}
+                className="text-green-600 hover:text-green-500 flex items-center"
+              >
                 <FaCheck className="mr-2" /> Done
               </button>
             )}
           </div>
-          <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Details of the product.</p>
+          <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
+            Details of the product.
+          </p>
 
           <div className="mt-6 border-t border-gray-100">
             <dl className="divide-y divide-gray-100">
               {/* Product Name */}
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="text-sm font-medium leading-6 text-gray-900">Product name</dt>
+                <dt className="text-sm font-medium leading-6 text-gray-900">
+                  Product name
+                </dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 border border-gray-300 p-2 rounded">
                   {!isEditing ? (
                     product.name
@@ -104,7 +169,9 @@ export default function ProductDetails({ params }) {
 
               {/* Category */}
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="text-sm font-medium leading-6 text-gray-900">Category</dt>
+                <dt className="text-sm font-medium leading-6 text-gray-900">
+                  Category
+                </dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 border border-gray-300 p-2 rounded">
                   {!isEditing ? (
                     product.category
@@ -124,7 +191,9 @@ export default function ProductDetails({ params }) {
 
               {/* Season */}
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="text-sm font-medium leading-6 text-gray-900">Season</dt>
+                <dt className="text-sm font-medium leading-6 text-gray-900">
+                  Season
+                </dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 border border-gray-300 p-2 rounded">
                   {!isEditing ? (
                     product.season
@@ -146,7 +215,9 @@ export default function ProductDetails({ params }) {
 
               {/* Price */}
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="text-sm font-medium leading-6 text-gray-900">Price</dt>
+                <dt className="text-sm font-medium leading-6 text-gray-900">
+                  Price
+                </dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 border border-gray-300 p-2 rounded">
                   {!isEditing ? (
                     product.price
@@ -164,7 +235,9 @@ export default function ProductDetails({ params }) {
 
               {/* Color */}
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="text-sm font-medium leading-6 text-gray-900">Color</dt>
+                <dt className="text-sm font-medium leading-6 text-gray-900">
+                  Color
+                </dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 border border-gray-300 p-2 rounded">
                   {!isEditing ? (
                     product.color
@@ -182,11 +255,16 @@ export default function ProductDetails({ params }) {
 
               {/* Sizes Available */}
               <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                <dt className="text-sm font-medium leading-6 text-gray-900">Sizes Available</dt>
+                <dt className="text-sm font-medium leading-6 text-gray-900">
+                  Sizes Available
+                </dt>
                 <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 flex flex-wrap gap-2">
                   {!isEditing ? (
                     product.sizes.map((size, index) => (
-                      <button key={index} className="border border-gray-300 p-2 rounded bg-[#F3D0D7]">
+                      <button
+                        key={index}
+                        className="border border-gray-300 p-2 rounded bg-[#F3D0D7]"
+                      >
                         {size}
                       </button>
                     ))
@@ -195,44 +273,37 @@ export default function ProductDetails({ params }) {
                       {editedProduct.sizes.map((size, index) => (
                         <button
                           key={index}
+                          onClick={() => handleRemoveSize(size)}
                           className={`border border-gray-300 p-2 rounded ${
-                            editedProduct.sizes.includes(size) ? 'bg-[#F3D0D7] text-white' : 'bg-gray-200'
+                            editedProduct.sizes.includes(size)
+                              ? "bg-[#F3D0D7]"
+                              : "bg-white"
                           }`}
-                          onClick={() =>
-                            setEditedProduct(prev => ({
-                              ...prev,
-                              sizes: prev.sizes.includes(size)
-                                ? prev.sizes.filter(s => s !== size)
-                                : [...prev.sizes, size],
-                              }))
-                            }
-                          >
-                            {size}
-                          </button>
-                        ))}
-                        <div className="flex gap-2 mt-4">
-                          <input
-                            type="text"
-                            value={newSize}
-                            onChange={(e) => setNewSize(e.target.value)}
-                            className="border border-gray-300 p-2 rounded"
-                            placeholder="Add new size"
-                          />
-                          <button
-                            onClick={handleAddSize}
-                            className="bg-[#F3D0D7] text-white border border-gray-300 p-2 rounded flex items-center"
-                          >
-                            <FaPlus className="mr-2" /> Add Size
-                          </button>
-                        </div>
-                      </>
-                    )}
-                  </dd>
-                </div>
-              </dl>
-            </div>
+                        >
+                          {size}
+                        </button>
+                      ))}
+                      <input
+                        type="text"
+                        value={newSize}
+                        onChange={(e) => setNewSize(e.target.value)}
+                        className="border border-gray-300 p-1 rounded"
+                        placeholder="Add a size"
+                      />
+                      <button
+                        onClick={handleAddSize}
+                        className="ml-2 text-green-600 hover:text-green-500"
+                      >
+                        <FaPlus />
+                      </button>
+                    </>
+                  )}
+                </dd>
+              </div>
+            </dl>
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
