@@ -110,7 +110,7 @@ export default function ProductDetails({ params }) {
       <div className="flex">
         {/* Product Image */}
         <div className="w-1/2">
-          <Image
+          <img
             src={product.imageUrl}
             alt={product.name}
             width={500}

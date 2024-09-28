@@ -76,7 +76,7 @@ const AppNavbar = () => {
     <nav className="p-5 bg-white shadow md:flex md:items-center md:justify-between sticky top-0 z-50 drop-shadow-sm">
       <div className="flex justify-between items-center">
         <span className="text-2xl cursor-pointer">
-          <Image
+          <img
             className="h-10 inline mx-4"
             src="/logo.png" // If the logo is in the 'public' folder
             alt="Logo"
