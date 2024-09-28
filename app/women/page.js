@@ -1,71 +1,53 @@
 "use client";
 
-import { useState } from "react";
-
-const womenProducts = [
-  {
-    id: 1,
-    name: "Balloon Skirt",
-    price: "$30/week",
-    color: "Cream",
-    season: "Spring",
-    sizes: ["S", "M", "L"],
-    img: "/image_woman/balloon skirt.jpg",
-  },
-  {
-    id: 2,
-    name: "Black Cardigan",
-    price: "$50/week",
-    color: "Black",
-    season: "Winter",
-    sizes: ["M", "L"],
-    img: "/image_woman/black cardigan.jpg",
-  },
-  {
-    id: 3,
-    name: "Black Leather Jacket",
-    price: "$50/week",
-    color: "Black",
-    season: "Fall",
-    sizes: ["S", "M"],
-    img: "/image_woman/black jacket.jpg",
-  },
-  {
-    id: 4,
-    name: "Formal Brown Blazer",
-    price: "$50/week",
-    color: "Brown",
-    season: "Winter",
-    sizes: ["M", "L", "XL"],
-    img: "/image_woman/brown blazer.jpg",
-  },
-  {
-    id: 5,
-    name: "Off Shoulder Flounce",
-    price: "$50/week",
-    color: "White",
-    season: "Summer",
-    sizes: ["S", "M"],
-    img: "/image_woman/Off Shoulder Flounce .jpg",
-  },
-  {
-    id: 6,
-    name: "Classy Ivory Strip Sweater",
-    price: "$50/week",
-    color: "Ivory",
-    season: "Winter",
-    sizes: ["M", "L"],
-    img: "/image_woman/sweater.jpg",
-  },
-];
+import LinearLoading from "@/components/LinearLoading";
+import apiFetch from "@/utils/api-fetch";
+import apiPaths from "@/utils/api-path";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export default function Women() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [selectedSizes, setSelectedSizes] = useState({}); // State to track size selection for each product
+  const [selectedSizes, setSelectedSizes] = useState({});
+
+  const router = useRouter();
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch("/api/v1/clothes?category=Women");
+      if (!res.ok) throw new Error("Failed to fetch products");
+      const data = await res.json();
+      setProducts(data.data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  // Fetch products from API
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchApi = apiFetch();
+
+  // Function to handle renting the product
+  const rentProduct = async (productId, size) => {
+    try {
+      await fetchApi.rentFetch(productId, size, router);
+      fetchProducts();
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
+  };
 
   const openModal = (product) => {
-    const size = selectedSizes[product.id];
+    const size = selectedSizes[product._id];
     if (!size) {
       alert("Please select a size before renting!");
       return;
@@ -74,9 +56,18 @@ export default function Women() {
     setShowModal(true);
   };
 
-  const closeModal = () => {
+  const closeModal = async () => {
+    setShowModal(false);
+    setSelectedProduct(null);
+  };
+
+  const submitModal = async () => {
     if (selectedProduct) {
-      resetSizeSelection(selectedProduct.id); // Reset size selection for the product
+      await rentProduct(
+        selectedProduct._id,
+        selectedSizes[selectedProduct._id]
+      ); // Call the API when the modal closes
+      resetSizeSelection(selectedProduct._id);
     }
     setShowModal(false);
     setSelectedProduct(null);
@@ -85,26 +76,30 @@ export default function Women() {
   const selectSize = (productId, size) => {
     setSelectedSizes((prev) => ({
       ...prev,
-      [productId]: selectedSizes[productId] === size ? null : size, // Reselect the size or unselect it
+      [productId]: selectedSizes[productId] === size ? null : size,
     }));
   };
 
   const resetSizeSelection = (productId) => {
     setSelectedSizes((prev) => ({
       ...prev,
-      [productId]: null, // Unselect the size for the product
+      [productId]: null,
     }));
   };
 
   const handleProductClick = (product) => {
-    // Reset all other product size selections
     Object.keys(selectedSizes).forEach((key) => {
-      if (parseInt(key) !== product.id) {
-        resetSizeSelection(key); // Unselect sizes of other products
+      if (parseInt(key) !== product._id) {
+        resetSizeSelection(key);
       }
     });
     setSelectedProduct(product);
   };
+
+  // Show loading or error messages
+  if (loading) {
+    return LinearLoading();
+  }
 
   return (
     <div className="p-8">
@@ -112,18 +107,18 @@ export default function Women() {
         Women&apos;s Clothing for Rent
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {womenProducts.map((product) => (
-          <div key={product.id} className="border p-4 rounded">
+        {products.map((product) => (
+          <div key={product._id} className="border p-4 rounded">
             <div className="w-full h-90 mb-4">
               <img
-                src={product.img}
+                src={product.imageUrl}
                 alt={product.name}
                 className="w-full h-full object-cover"
               />
             </div>
             <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
             <p className="mb-2">
-              <strong>Price:</strong> {product.price}
+              <strong>Price:</strong> ฿{product.price}/week
             </p>
             <p className="mb-2">
               <strong>Color:</strong> {product.color}
@@ -132,17 +127,16 @@ export default function Women() {
               <strong>Season:</strong> {product.season}
             </p>
 
-            {/* Display Available Sizes */}
             <div className="flex space-x-2 mb-2">
               {product.sizes.map((size, index) => (
                 <span
                   key={index}
                   onClick={() => {
-                    handleProductClick(product); // Handle new product selection
-                    selectSize(product.id, size); // Select size for the new product
+                    handleProductClick(product);
+                    selectSize(product._id, size);
                   }}
                   className={`px-2 py-1 border rounded cursor-pointer ${
-                    selectedSizes[product.id] === size
+                    selectedSizes[product._id] === size
                       ? "bg-pink-300 text-white border-pink-300"
                       : "bg-gray-100 text-gray-600 border-gray-300"
                   }`}
@@ -162,9 +156,8 @@ export default function Women() {
         ))}
       </div>
 
-      {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg w-96 max-w-md">
             <h2 className="text-xl font-bold mb-4">Scan to Pay</h2>
             {selectedProduct && (
@@ -177,9 +170,8 @@ export default function Women() {
                 </p>
                 <p className="mb-4 text-lg">
                   <strong>Selected Size:</strong>{" "}
-                  {selectedSizes[selectedProduct.id]}
-                </p>{" "}
-                {/* Display selected size */}
+                  {selectedSizes[selectedProduct._id]}
+                </p>
                 <img
                   src="/qr-code/qrcode.png"
                   alt="QR Code for Payment"
@@ -196,7 +188,7 @@ export default function Women() {
               </button>
               <button
                 className="bg-green-500 text-white py-2 px-6 rounded hover:bg-green-600 transition duration-300"
-                onClick={closeModal}
+                onClick={submitModal}
               >
                 Done
               </button>

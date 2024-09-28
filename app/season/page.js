@@ -1,43 +1,10 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
+import LinearLoading from "@/components/LinearLoading";
 
-// Example products data (you can import or fetch this in real scenarios)
-const products = [
-  {
-    id: 1,
-    name: "Classy Blazer",
-    price: "$20/week",
-    color: "brown",
-    category: "Men",
-    season: "Winter",
-    img: "/image_woman/turtleneck.jpeg",
-    sizes: ["XS", "S", "M", "L"],
-  },
-  {
-    id: 2,
-    name: "Fur cuffed cardigan",
-    price: "$30/week",
-    color: "cream",
-    category: "Women",
-    season: "Winter",
-    img: "/image_woman/fur-cuffed-cardigan.jpeg",
-    sizes: ["S", "M", "L"],
-  },
-  {
-    id: 3,
-    name: "Shirt",
-    price: "$20/week",
-    color: "cream",
-    category: "Men",
-    season: "Fall",
-    img: "/image_men/shirt.jpeg",
-    sizes: ["S", "M", "L"],
-  },
-];
-
-// Banner images for each season
 const banners = {
   Summer:
     "https://www.fastsimon.com/wp-content/uploads/pexels-clint-maliq-13634354-scaled.webp",
@@ -56,17 +23,42 @@ export default function Season() {
   const formattedSeason =
     season.charAt(0).toUpperCase() + season.slice(1).toLowerCase();
 
-  // Filter products based on the selected season
-  const filteredProducts = products.filter(
-    (product) => product.season.toLowerCase() === formattedSeason.toLowerCase()
-  );
+  // State to store the fetched products and loading status
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch products based on the season from the API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `/api/v1/clothes?season=${formattedSeason}`
+        );
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+        const data = await response.json();
+        setProducts(data.data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setError("Failed to load products.");
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [formattedSeason]);
 
   // Select the appropriate banner image based on the season
   const bannerImage = banners[formattedSeason] || banners.Summer;
 
   return (
     <>
-      <div style={{ textAlign: "center", margin: "20px 0" }}>
+      {loading ? <LinearLoading /> : error ? <p>{error}</p> : null}
+      <div style={{ textAlign: "center", margin: "0px 0" }}>
         {/* Hero section with dynamic banner */}
         <div
           className="w-full h-80 relative"
@@ -97,32 +89,21 @@ export default function Season() {
         </p>
       </div>
 
-      <div
-        className="products-grid"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "30px",
-          padding: "0 50px",
-        }}
-      >
-        {/* Display filtered products */}
-        {filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
-            <div
-              key={product.id}
-              className="product-card"
-              style={{ textAlign: "center" }}
-            >
-              <Image
-                src={product.img}
+      <div className="products-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 px-6 lg:px-16">
+        {/* Handle loading, error, and product display */}
+        {products.length > 0 ? (
+          products.map((product) => (
+            <div key={product.id} className="product-card text-center">
+              <img
+                class="mx-auto"
+                src={product.imageUrl}
                 alt={product.name}
                 width={300}
                 height={400}
                 style={{ objectFit: "cover", borderRadius: "10px" }}
               />
-              <h3 style={{ margin: "15px 0" }}>{product.name}</h3>
-              <p style={{ color: "#333" }}>{product.price}</p>
+              <h3 className="mt-4 text-lg font-bold">{product.name}</h3>
+              <p className="text-gray-700">฿{product.price}/week</p>
             </div>
           ))
         ) : (
