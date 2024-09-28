@@ -26,6 +26,7 @@ const clothesSchema = new mongoose.Schema(
     },
     imageUrl: {
       type: String,
+      require: true,
     },
     sizes: {
       type: [String],

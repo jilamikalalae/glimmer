@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import LinearLoading from "./LinearLoading";
 
 export default function AddProduct() {
   const [newProduct, setNewProduct] = useState({
@@ -9,11 +10,15 @@ export default function AddProduct() {
     color: "",
     category: "Men",
     season: "Winter",
-    img: "",
+    imageUrl: "",
     sizes: [],
   });
   const [newSize, setNewSize] = useState("");
   const router = useRouter();
+
+  if (loading) {
+    return LinearLoading();
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -133,8 +138,8 @@ export default function AddProduct() {
           </label>
           <input
             type="text"
-            name="img"
-            value={newProduct.img}
+            name="imageUrl"
+            value={newProduct.imageUrl}
             onChange={handleChange}
             className="mt-1 block w-full border border-gray-300 rounded p-2"
             required
