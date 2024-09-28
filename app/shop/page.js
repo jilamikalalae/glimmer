@@ -1,5 +1,6 @@
 "use client";
 
+import LinearLoading from "@/components/LinearLoading";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
@@ -8,32 +9,51 @@ export default function Shop() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch("/api/portal/clothes");
-        const result = await response.json();
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch("/api/portal/clothes");
+      const result = await response.json();
 
-        if (response.ok && result.success) {
-          setProducts(result.data);
-        } else {
-          setError(result.message || "Failed to fetch products");
-        }
-      } catch (err) {
-        setError("Error fetching products");
-      } finally {
-        setLoading(false);
+      if (response.ok && result.success) {
+        setProducts(result.data);
+      } else {
+        setError(result.message || "Failed to fetch products");
       }
-    };
+    } catch (err) {
+      setError("Error fetching products");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProducts();
   }, []);
 
-  const handleDelete = (id) => {
-    setProducts(products.filter((product) => product.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/portal/clothes/${id}`, {
+        method: "DELETE",
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setProduct(editedProduct);
+        setIsEditing(false);
+      } else {
+        setError(result.message || "Failed to update product");
+      }
+    } catch (err) {
+      setError("Error updating product");
+    } finally {
+      await fetchProducts();
+      setLoading(false);
+    }
+    // setProducts(products.filter((product) => product.id !== id));
   };
 
-  if (loading) return;
   if (loading) {
     return LinearLoading();
   }
@@ -91,7 +111,7 @@ export default function Shop() {
                 View Details
               </Link>
               <button
-                onClick={() => handleDelete(product.id)}
+                onClick={() => handleDelete(product._id)}
                 className="mt-2 text-red-600 hover:text-red-500"
               >
                 Delete

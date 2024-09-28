@@ -1,7 +1,7 @@
 import Clothes from "@/models/clothes";
 import { responseWrapper } from "@/utils/api-response-wrapper";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/utils/auth";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 export async function POST(req) {
   try {

@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import LinearLoading from "./LinearLoading";
 
 export default function AddProduct() {
   const [newProduct, setNewProduct] = useState({
@@ -15,10 +14,6 @@ export default function AddProduct() {
   });
   const [newSize, setNewSize] = useState("");
   const router = useRouter();
-
-  if (loading) {
-    return LinearLoading();
-  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;

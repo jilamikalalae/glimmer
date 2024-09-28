@@ -24,7 +24,7 @@ export default function SignupForm() {
   }, [session, router]);
 
   if (loading) {
-    return LinearLoading();
+    return <LinearLoading />;
   }
 
   const handleSubmit = async (e) => {
@@ -52,25 +52,29 @@ export default function SignupForm() {
 
       if (res.ok) {
         const form = e.target;
-        form.reset();
+        form.reset(); // Reset form only on successful signup
 
-        const res = await signIn("credentials", {
+        const signInRes = await signIn("credentials", {
           email,
           password,
           redirect: false,
         });
 
-        router.replace("/");
+        if (signInRes?.ok) {
+          router.replace("/");
+        } else {
+          setLoading(false);
+          setError("Failed to sign in.");
+        }
       } else {
-        setLoading(true);
+        setLoading(false);
         const { error } = await res.json();
         if (error) {
           setError(error);
-          return;
         }
       }
     } catch (error) {
-      setLoading(true);
+      setLoading(false);
       setError("An error occurred. Please try again.");
     }
   };
@@ -95,6 +99,7 @@ export default function SignupForm() {
             <div className="mt-2">
               <input
                 onChange={(e) => setName(e.target.value)}
+                value={name} // Keep input value persistent
                 id="name"
                 name="name"
                 type="text"
@@ -114,6 +119,7 @@ export default function SignupForm() {
             <div className="mt-2">
               <input
                 onChange={(e) => setUsername(e.target.value)}
+                value={username} // Keep input value persistent
                 id="username"
                 name="username"
                 type="text"
@@ -133,6 +139,7 @@ export default function SignupForm() {
             <div className="mt-2">
               <input
                 onChange={(e) => setEmail(e.target.value)}
+                value={email} // Keep input value persistent
                 id="email"
                 name="email"
                 type="email"
@@ -153,6 +160,7 @@ export default function SignupForm() {
             <div className="mt-2">
               <input
                 onChange={(e) => setPassword(e.target.value)}
+                value={password} // Keep input value persistent
                 id="password"
                 name="password"
                 type="password"
@@ -180,7 +188,7 @@ export default function SignupForm() {
         <p className="mt-10 text-center text-sm text-gray-500">
           Already have an account?{" "}
           <button
-            onClick={() => router.push("/login")}
+            onClick={() => router.push("/auth/login")}
             className="font-semibold leading-6 text-pink-600 hover:text-pink-500 focus:outline-none"
           >
             Sign in

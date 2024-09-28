@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { FaEdit, FaCheck, FaArrowLeft, FaPlus } from "react-icons/fa";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import LinearLoading from "@/components/LinearLoading";
 
 export default function ProductDetails({ params }) {
   const { id } = params; // Product ID from URL params
@@ -39,9 +40,32 @@ export default function ProductDetails({ params }) {
   }, [id]);
 
   const handleEdit = () => setIsEditing(true);
-  const handleDone = () => {
-    setIsEditing(false);
-    setProduct(editedProduct);
+
+  const handleDone = async () => {
+    try {
+      setLoading(true);
+
+      const response = await fetch(`/api/portal/clothes/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editedProduct),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        setProduct(editedProduct);
+        setIsEditing(false);
+      } else {
+        setError(result.message || "Failed to update product");
+      }
+    } catch (err) {
+      setError("Error updating product");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -59,13 +83,18 @@ export default function ProductDetails({ params }) {
     }
   };
 
+  const handleRemoveSize = (sizeToRemove) => {
+    setEditedProduct((prev) => ({
+      ...prev,
+      sizes: prev.sizes.filter((size) => size !== sizeToRemove),
+    }));
+  };
+
   const handleBack = () => {
     router.back();
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
-  if (!product) return <p>Product not found</p>;
+  if (loading) return LinearLoading();
 
   return (
     <div className="p-8">
@@ -244,6 +273,7 @@ export default function ProductDetails({ params }) {
                       {editedProduct.sizes.map((size, index) => (
                         <button
                           key={index}
+                          onClick={() => handleRemoveSize(size)}
                           className={`border border-gray-300 p-2 rounded ${
                             editedProduct.sizes.includes(size)
                               ? "bg-[#F3D0D7]"
