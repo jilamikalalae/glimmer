@@ -2,7 +2,6 @@
 
 import LinearLoading from "@/components/LinearLoading";
 import apiFetch from "@/utils/api-fetch";
-import apiPaths from "@/utils/api-path";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
@@ -104,10 +103,10 @@ export default function Men() {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-4">Men&apos;s Clothing for Rent</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {products.map((product) => (
           <div key={product._id} className="border p-4 rounded">
-            <div className="w-full h-4/6 mb-4">
+            <div className="w-full h-96 mb-4">
               <img
                 src={product.imageUrl}
                 alt={product.name}
