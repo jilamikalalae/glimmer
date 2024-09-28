@@ -89,25 +89,24 @@ export default function Season() {
         </p>
       </div>
 
-      <div className="products-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 px-6 lg:px-16">
+      <div className="products-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-6 lg:px-16">
         {/* Handle loading, error, and product display */}
-        {products.length > 0 ? (
+        {!loading && products.length === 0 ? (
+          <p>No products found for {formattedSeason} season.</p>
+        ) : (
           products.map((product) => (
             <div key={product.id} className="product-card text-center">
-              <img
-                class="mx-auto"
-                src={product.imageUrl}
-                alt={product.name}
-                width={300}
-                height={400}
-                style={{ objectFit: "cover", borderRadius: "10px" }}
-              />
+              <div className="relative h-96 w-full">
+                <img
+                  className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                  src={product.imageUrl}
+                  alt={product.name}
+                />
+              </div>
               <h3 className="mt-4 text-lg font-bold">{product.name}</h3>
               <p className="text-gray-700">฿{product.price}/week</p>
             </div>
           ))
-        ) : (
-          <p>No products found for {formattedSeason} season.</p>
         )}
       </div>
 

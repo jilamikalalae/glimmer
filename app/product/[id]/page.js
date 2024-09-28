@@ -219,10 +219,10 @@ export default function ProductDetails({ params }) {
                       onChange={handleChange}
                       className="w-full border border-gray-300 p-1 rounded"
                     >
-                      <option value="winter">Winter</option>
-                      <option value="spring">Spring</option>
-                      <option value="summer">Summer</option>
-                      <option value="fall">Fall</option>
+                      <option value="Winter">Winter</option>
+                      <option value="Spring">Spring</option>
+                      <option value="Summer">Summer</option>
+                      <option value="Fall">Fall</option>
                     </select>
                   )}
                 </dd>
