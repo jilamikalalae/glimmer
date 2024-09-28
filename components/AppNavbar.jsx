@@ -42,34 +42,38 @@ const AppNavbar = () => {
 
   const handleSignOut = () => {
     setLoading(true);
+    setOpen(false);
     signOut({ callbackUrl: "/auth/login" });
   };
 
+  const handleClickAway = (event) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return;
+    }
+    setOpen(false);
+  };
+
   const GuestDropDown = (
-    <>
-      <MenuList autoFocusItem={open} id="composition-menu">
-        <MenuItem onClick={(event) => handleClose(event, "/auth/login")}>
-          Login
-        </MenuItem>
-        <MenuItem onClick={(event) => handleClose(event, "/auth/signup")}>
-          Sign Up
-        </MenuItem>
-      </MenuList>
-    </>
+    <MenuList autoFocusItem={open} id="composition-menu">
+      <MenuItem onClick={(event) => handleClose(event, "/auth/login")}>
+        Login
+      </MenuItem>
+      <MenuItem onClick={(event) => handleClose(event, "/auth/signup")}>
+        Sign Up
+      </MenuItem>
+    </MenuList>
   );
 
   const UserDropDown = (
-    <>
-      <MenuList autoFocusItem={open} id="composition-menu">
-        <MenuItem onClick={(event) => handleClose(event, "/shop")}>
-          My shop
-        </MenuItem>
-        <MenuItem onClick={(event) => handleClose(event, "/account")}>
-          My account
-        </MenuItem>
-        <MenuItem onClick={handleSignOut}>Logout</MenuItem>
-      </MenuList>
-    </>
+    <MenuList autoFocusItem={open} id="composition-menu">
+      <MenuItem onClick={(event) => handleClose(event, "/shop")}>
+        My shop
+      </MenuItem>
+      <MenuItem onClick={(event) => handleClose(event, "/account")}>
+        My account
+      </MenuItem>
+      <MenuItem onClick={handleSignOut}>Logout</MenuItem>
+    </MenuList>
   );
 
   return (
@@ -154,7 +158,7 @@ const AppNavbar = () => {
                   }}
                 >
                   <Paper>
-                    <ClickAwayListener onClickAway={handleClose}>
+                    <ClickAwayListener onClickAway={handleClickAway}>
                       {session ? UserDropDown : GuestDropDown}
                     </ClickAwayListener>
                   </Paper>
