@@ -109,11 +109,11 @@ export default function Women() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {products.map((product) => (
           <div key={product._id} className="border p-4 rounded">
-            <div className="w-full h-90 mb-4">
+            <div className="w-full h-4/6 mb-4">
               <img
                 src={product.imageUrl}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             </div>
             <h2 className="text-xl font-semibold mb-2">{product.name}</h2>

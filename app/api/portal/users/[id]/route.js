@@ -7,8 +7,6 @@ export async function GET(req, { params }) {
   try {
     const { id } = params;
 
-    await dbConnect();
-
     // Check if the provided ID is a valid MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return responseWrapper(400, null, "Invalid user ID");
@@ -35,8 +33,6 @@ export async function PUT(req, { params }) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return responseWrapper(400, null, "Invalid user ID");
     }
-
-    await dbConnect();
 
     const user = await User.findByIdAndUpdate(id, { name, username, email });
 
