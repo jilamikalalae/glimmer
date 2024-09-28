@@ -47,7 +47,7 @@ export default function Shop() {
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-4">Shop</h1>
       <div className="mb-4">
-        <Link href="/add-product">
+        <Link href="/shop/add-product">
           <button className="bg-[#F3D0D7] text-white border border-gray-300 p-2 rounded flex items-center">
             Add Product
           </button>
