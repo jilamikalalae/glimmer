@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import AddClothesImageUpload from "@/components/AddClothesImageUpload";
 
 export default function AddProduct() {
   const [newProduct, setNewProduct] = useState({
@@ -33,6 +34,10 @@ export default function AddProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (newProduct.imageUrl == "") {
+      alert("Image URL is required!");
+    }
+
     try {
       const response = await fetch("/api/portal/clothes", {
         method: "POST",
@@ -50,6 +55,10 @@ export default function AddProduct() {
     } catch (error) {
       console.error("Error adding product:", error);
     }
+  };
+
+  const handleImageUpload = (url) => {
+    setNewProduct((prev) => ({ ...prev, imageUrl: url }));
   };
 
   return (
@@ -129,19 +138,6 @@ export default function AddProduct() {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Image URL
-          </label>
-          <input
-            type="text"
-            name="imageUrl"
-            value={newProduct.imageUrl}
-            onChange={handleChange}
-            className="mt-1 block w-full border border-gray-300 rounded p-2"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
             Sizes
           </label>
           <div className="flex flex-wrap gap-2 mb-2">
@@ -168,6 +164,22 @@ export default function AddProduct() {
           >
             Add Size
           </button>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Image URL
+          </label>
+          {/* <input
+            type="text"
+            name="imageUrl"
+            value={newProduct.imageUrl}
+            onChange={handleChange}
+            className="mt-1 block w-full border border-gray-300 rounded p-2"
+            required
+          /> */}
+
+          <AddClothesImageUpload onUploadComplete={handleImageUpload} />
         </div>
         <button
           type="submit"

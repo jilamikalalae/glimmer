@@ -4,8 +4,12 @@ const paths = apiPaths(); // Use the apiPaths function
 
 const apiFetch = () => {
   const rentFetch = async (clothesId, size, router) => {
-    const res = await fetch(paths.rentClothes(clothesId, size), {
+    const res = await fetch(paths.rentClothes(clothesId), {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ size }),
     });
     if (res.status == 401) {
       router.push("/auth/login");

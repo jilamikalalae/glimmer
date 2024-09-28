@@ -1,11 +1,11 @@
 import Clothes from "@/models/clothes";
 import { getServerSession } from "next-auth";
 import { responseWrapper } from "@/utils/api-response-wrapper";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { AuthOptions } from "@/utils/auth";
 
 export async function GET(req, { params }) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(AuthOptions);
     if (!session) {
       return responseWrapper(401, null, "Unauthorized");
     }
@@ -29,7 +29,7 @@ export async function GET(req, { params }) {
 
 export async function PUT(req, { params }) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(AuthOptions);
     if (!session) {
       return responseWrapper(401, null, "Unauthorized");
     }
@@ -62,7 +62,7 @@ export async function PUT(req, { params }) {
 
 export async function DELETE(req, { params }) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(AuthOptions);
     if (!session) {
       return responseWrapper(401, null, "Unauthorized");
     }

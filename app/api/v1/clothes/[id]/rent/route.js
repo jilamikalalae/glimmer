@@ -1,25 +1,22 @@
 import Clothes from "@/models/clothes";
 import { getServerSession } from "next-auth";
 import { responseWrapper } from "@/utils/api-response-wrapper";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { AuthOptions } from "@/utils/auth";
 
 export async function POST(req, { params }) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(AuthOptions);
     if (!session) {
       return responseWrapper(401, null, "Unauthorized");
     }
     const { id } = params;
 
-    const size = req.nextUrl.searchParams.get("size");
+    const size = await req.json();
     if (!size) {
       return responseWrapper(400, null, "Size not choose");
     }
 
-    let data = await Clothes.findByIdAndUpdate(id, {
-      isRented: true,
-      rentedById: session.user.id,
-    });
+    let data = await Clothes.findById(id);
 
     if (!data) {
       return responseWrapper(404, null, "Product not found");
@@ -44,13 +41,8 @@ export async function POST(req, { params }) {
 }
 
 function removeElementByValue(array, value) {
-  console.log(array);
   const index = array.indexOf(value);
-  if (index !== -1) {
-    // Remove the element at the found index
-    array.splice(index, 1);
+  array.splice(index, 1);
 
-    console.log(array);
-  }
   return array;
 }

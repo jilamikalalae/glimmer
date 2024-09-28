@@ -1,11 +1,11 @@
 import Clothes from "@/models/clothes";
 import { responseWrapper } from "@/utils/api-response-wrapper";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { AuthOptions } from "@/utils/auth";
 
 export async function POST(req) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(AuthOptions);
     if (!session) {
       return responseWrapper(401, null, "Unauthorized");
     }
@@ -35,7 +35,7 @@ export async function POST(req) {
 
 export async function GET(req) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(AuthOptions);
     if (!session) {
       return responseWrapper(401, null, "Unauthorized");
     }

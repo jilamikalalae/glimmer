@@ -5,6 +5,7 @@ import { FaEdit, FaCheck, FaArrowLeft, FaPlus } from "react-icons/fa";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import LinearLoading from "@/components/LinearLoading";
+import EditClothesImageUpload from "@/components/EditClothesImageUpload";
 
 export default function ProductDetails({ params }) {
   const { id } = params; // Product ID from URL params
@@ -16,26 +17,25 @@ export default function ProductDetails({ params }) {
   const [error, setError] = useState(null);
   const router = useRouter();
 
-  // Fetch product details from the API
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await fetch(`/api/portal/clothes/${id}`);
-        const result = await response.json();
+  const fetchProduct = async () => {
+    try {
+      const response = await fetch(`/api/portal/clothes/${id}`);
+      const result = await response.json();
 
-        if (response.ok && result.success) {
-          setProduct(result.data);
-          setEditedProduct(result.data); // Initialize the editable product state
-        } else {
-          setError(result.message || "Failed to fetch product");
-        }
-      } catch (err) {
-        setError("Error fetching product");
-      } finally {
-        setLoading(false);
+      if (response.ok && result.success) {
+        setProduct(result.data);
+        setEditedProduct(result.data); // Initialize the editable product state
+      } else {
+        setError(result.message || "Failed to fetch product");
       }
-    };
+    } catch (err) {
+      setError("Error fetching product");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProduct();
   }, [id]);
 
@@ -58,6 +58,7 @@ export default function ProductDetails({ params }) {
       if (response.ok && result.success) {
         setProduct(editedProduct);
         setIsEditing(false);
+        fetchProduct();
       } else {
         setError(result.message || "Failed to update product");
       }
@@ -96,6 +97,10 @@ export default function ProductDetails({ params }) {
 
   if (loading) return LinearLoading();
 
+  const handleImageUpload = (url) => {
+    setEditedProduct((prev) => ({ ...prev, imageUrl: url }));
+  };
+
   return (
     <div className="p-8">
       <div className="flex justify-between">
@@ -110,13 +115,23 @@ export default function ProductDetails({ params }) {
       <div className="flex">
         {/* Product Image */}
         <div className="w-1/2">
-          <img
-            src={product.imageUrl}
-            alt={product.name}
-            width={500}
-            height={500}
-            className="object-cover"
-          />
+          {!isEditing ? (
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              width={500}
+              height={500}
+              className="object-cover"
+            />
+          ) : (
+            <img
+              src={editedProduct.imageUrl}
+              alt={editedProduct.name}
+              width={500}
+              height={500}
+              className="object-cover"
+            />
+          )}
         </div>
 
         {/* Product Details */}
@@ -300,6 +315,22 @@ export default function ProductDetails({ params }) {
                   )}
                 </dd>
               </div>
+              {isEditing ? (
+                <div className="mt-6 border-t border-gray-100">
+                  <dl className="divide-y divide-gray-100">
+                    {/* Edit Image */}
+                    <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                      <dt className="text-sm font-medium leading-6 text-gray-900">
+                        Edit Image
+                      </dt>
+
+                      <EditClothesImageUpload
+                        onUploadComplete={handleImageUpload}
+                      />
+                    </div>
+                  </dl>
+                </div>
+              ) : null}
             </dl>
           </div>
         </div>

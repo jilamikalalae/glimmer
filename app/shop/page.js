@@ -78,7 +78,7 @@ export default function Shop() {
             <img
               src={product.imageUrl}
               alt={product.name}
-              className="w-full h-auto mb-4"
+              className="w-full h-4/6 mb-4 object-contain"
             />
             <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
             <p className="mb-2">

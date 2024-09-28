@@ -2,10 +2,10 @@ import Clothes from "@/models/clothes";
 import { responseWrapper } from "@/utils/api-response-wrapper";
 
 export async function GET(req) {
-  try {
-    const category = req.nextUrl.searchParams.get("category");
-    const season = req.nextUrl.searchParams.get("season");
+  const season = req.nextUrl.searchParams.get("season");
+  const category = req.nextUrl.searchParams.get("category");
 
+  try {
     const query = {};
     if (category) {
       query.category = category;
