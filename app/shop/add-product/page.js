@@ -153,7 +153,7 @@ export default function AddProduct() {
           <input
             type="text"
             value={newSize}
-            onChange={(e) => setNewSize(e.target.value)}
+            onChange={(e) => setNewSize(e.target.value.toUpperCase())}
             className="border border-gray-300 p-2 rounded"
             placeholder="Add new size"
           />
