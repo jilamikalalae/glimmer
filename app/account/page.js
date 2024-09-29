@@ -74,13 +74,31 @@ export default function AccountSettings() {
     }
   }, [status, session]);
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     if (
       confirm(
         "Are you sure you want to delete your account? This action cannot be undone."
       )
     ) {
-      alert("Your account has been deleted.");
+      try {
+        setLoading(true);
+
+        const response = await fetch("/api/portal/users", {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to delete account");
+        }
+
+        signOut({ callbackUrl: "/auth/login" });
+      } catch (err) {
+        setError(
+          err.message || "Something went wrong while deleting the account"
+        );
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
