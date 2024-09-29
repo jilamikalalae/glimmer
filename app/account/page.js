@@ -165,7 +165,7 @@ export default function AccountSettings() {
         </div>
 
         {/* Profile Picture Section */}
-        <div className="flex flex-col items-center mb-8">
+        {/* <div className="flex flex-col items-center mb-8">
           <label className="cursor-pointer mb-4">
             {preview ? (
               <img
@@ -207,7 +207,7 @@ export default function AccountSettings() {
               Delete Image
             </button>
           )}
-        </div>
+        </div> */}
 
         {/* Form Section */}
         <form onSubmit={handleSaveChanges}>
