@@ -32,6 +32,8 @@ Using:
 - **MongoDB**: A NoSQL database that allows for flexible data management and efficient querying capabilities.
 - **UploadThings** : For upload the image
 
+[Demonstrate web](https://youtu.be/TnMufFbsQ7Y?si=trNliX3xkttIGQhT)
+
 
 ## Screenshots
 
